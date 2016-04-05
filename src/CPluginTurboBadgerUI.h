@@ -69,7 +69,7 @@ namespace TurboBadgerUIPlugin
 
             void* GetConcreteInterface( const char* sInterfaceVersion )
             {
-                return static_cast < IPluginTurboBadgerUI* >( this );
+                return static_cast <IPluginTurboBadgerUI*>( this );
             };
 
             // IPluginTurboBadgerUI

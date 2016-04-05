@@ -1,0 +1,13 @@
+﻿  Indenting the files 'h hpp c cc cpp' in 'E:\Dev\CRYENGINE\CEV\CryHTML\Code\Plugin_TurboBadgerUI\project\\..' with profile 'E:\Dev\CRYENGINE\CEV\CryHTML\Code\Plugin_TurboBadgerUI\tools\codestyle.astylerc'
+  CPluginTurboBadgerUI.cpp
+E:\Program Files (x86)\Crytek\CRYENGINE Launcher\Crytek\CRYENGINE_5.0\Code\CryEngine\CryAction\StdAfx.h(28): warning C4005: 'eCryModule': macro redefinition
+  e:\dev\cryengine\cev\cryhtml\code\plugin_turbobadgerui\src\StdAfx.h(5): note: see previous definition of 'eCryModule'
+E:\Program Files (x86)\Crytek\CRYENGINE Launcher\Crytek\CRYENGINE_5.0\Code\CryEngine\CryAction\StdAfx.h(29): warning C4005: 'RWI_NAME_TAG': macro redefinition
+  E:\Program Files (x86)\Crytek\CRYENGINE Launcher\Crytek\CRYENGINE_5.0\Code\CryEngine\CryCommon\physinterface.h(2877): note: see previous definition of 'RWI_NAME_TAG'
+E:\Program Files (x86)\Crytek\CRYENGINE Launcher\Crytek\CRYENGINE_5.0\Code\CryEngine\CryAction\StdAfx.h(30): warning C4005: 'PWI_NAME_TAG': macro redefinition
+  E:\Program Files (x86)\Crytek\CRYENGINE Launcher\Crytek\CRYENGINE_5.0\Code\CryEngine\CryCommon\physinterface.h(2874): note: see previous definition of 'PWI_NAME_TAG'
+tb_static.lib(tb_core.obj) : warning LNK4075: ignoring '/EDITANDCONTINUE' due to '/OPT:ICF' specification
+     Creating library E:\Dev\CRYENGINE\CEV\CryHTML\Code\Plugin_TurboBadgerUI\project\..\..\..\bin\win_x64\Plugins\TurboBadgerUI\Plugin_TurboBadgerUI.lib and object E:\Dev\CRYENGINE\CEV\CryHTML\Code\Plugin_TurboBadgerUI\project\..\..\..\bin\win_x64\Plugins\TurboBadgerUI\Plugin_TurboBadgerUI.exp
+tb_static.lib(tb_system_win.obj) : error LNK2001: unresolved external symbol __imp_timeGetTime
+tb_static.lib(tb_msg.obj) : error LNK2001: unresolved external symbol "public: static void __cdecl tb::TBSystem::RescheduleTimer(double)" (?RescheduleTimer@TBSystem@tb@@SAXN@Z)
+E:\Dev\CRYENGINE\CEV\CryHTML\Code\Plugin_TurboBadgerUI\project\..\..\..\bin\win_x64\Plugins\TurboBadgerUI\Plugin_TurboBadgerUI.dll : fatal error LNK1120: 2 unresolved externals

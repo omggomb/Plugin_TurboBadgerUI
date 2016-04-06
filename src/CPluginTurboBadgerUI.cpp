@@ -54,8 +54,6 @@ namespace TurboBadgerUIPlugin
         gPluginManager = ( PluginManager::IPluginManager* )pPluginManager->GetConcreteInterface( NULL );
         CPluginBase::Init( env, startupParams, pPluginManager, sPluginDirectory );
 
-        tb::tb_core_init( nullptr );
-
         return true;
     }
 

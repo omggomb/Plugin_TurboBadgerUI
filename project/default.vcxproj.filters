@@ -24,6 +24,12 @@
       <UniqueIdentifier>{e06efda0-8de4-46d3-9f56-e8e31b7a3c95}</UniqueIdentifier>
       <Extensions>nsi;nsh</Extensions>
     </Filter>
+    <Filter Include="Header Files\TurbobadgerImpl">
+      <UniqueIdentifier>{2e490383-ed68-4ecf-a852-119b29894107}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\TurbobadgerImpl">
+      <UniqueIdentifier>{31ef69ac-221e-4e10-bf6e-44cfe0e50023}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\readme.md" />
@@ -58,6 +64,18 @@
     <ClCompile Include="..\src\CPluginTurboBadgerUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\CryTBFile.cpp">
+      <Filter>Source Files\TurbobadgerImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CryTBSystem.cpp">
+      <Filter>Source Files\TurbobadgerImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CryTBImageLoader.cpp">
+      <Filter>Source Files\TurbobadgerImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CryTBClipboard.cpp">
+      <Filter>Source Files\TurbobadgerImpl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\StdAfx.h">
@@ -71,6 +89,12 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\CryTBFile.h">
+      <Filter>Header Files\TurbobadgerImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\CryTBImageLoader.h">
+      <Filter>Header Files\TurbobadgerImpl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -7,9 +7,11 @@ class CCryTBFile : public tb::TBFile
 {
     public:
         CCryTBFile( string sFilePath );
-        virtual ~CCryTBFile();
+        ~CCryTBFile();
 
         long Size() override;
 
         size_t Read( void* buf, size_t elemSize, size_t count ) override;
+
+    private:
 };

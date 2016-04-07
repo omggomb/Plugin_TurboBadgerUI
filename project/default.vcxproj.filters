@@ -76,6 +76,12 @@
     <ClCompile Include="..\src\CryTBClipboard.cpp">
       <Filter>Source Files\TurbobadgerImpl</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\CryTBBitmap.cpp">
+      <Filter>Source Files\TurbobadgerImpl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CryTBRenderer.cpp">
+      <Filter>Source Files\TurbobadgerImpl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\StdAfx.h">
@@ -94,6 +100,12 @@
       <Filter>Header Files\TurbobadgerImpl</Filter>
     </ClInclude>
     <ClInclude Include="..\inc\CryTBImageLoader.h">
+      <Filter>Header Files\TurbobadgerImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\CryTBRenderer.h">
+      <Filter>Header Files\TurbobadgerImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\CryTBBitmap.h">
       <Filter>Header Files\TurbobadgerImpl</Filter>
     </ClInclude>
   </ItemGroup>

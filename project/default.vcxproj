@@ -34,17 +34,21 @@
   <ItemGroup>
     <ClCompile Include="..\src\CPluginTurboBadgerUI.cpp" />
     <ClCompile Include="..\src\CPluginTurboBadgerUIModule.cpp" />
+    <ClCompile Include="..\src\CryTBBitmap.cpp" />
     <ClCompile Include="..\src\CryTBClipboard.cpp" />
     <ClCompile Include="..\src\CryTBFile.cpp" />
     <ClCompile Include="..\src\CryTBImageLoader.cpp" />
+    <ClCompile Include="..\src\CryTBRenderer.cpp" />
     <ClCompile Include="..\src\CryTBSystem.cpp" />
     <ClCompile Include="..\src\StdAfx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\inc\CryTBBitmap.h" />
     <ClInclude Include="..\inc\CryTBFile.h" />
     <ClInclude Include="..\inc\CryTBImageLoader.h" />
+    <ClInclude Include="..\inc\CryTBRenderer.h" />
     <ClInclude Include="..\inc\IPluginTurboBadgerUI.h" />
     <ClInclude Include="..\src\CPluginTurboBadgerUI.h" />
     <ClInclude Include="..\src\StdAfx.h" />

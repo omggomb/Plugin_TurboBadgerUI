@@ -1,9 +1,19 @@
 #include <StdAfx.h>
 #include <tb_system.h>
 #include <CryWindows.h>
+#include <CPluginTurboBadgerUI.h>
 
 void TBDebugOut( const char* message )
 {
+    if ( TurboBadgerUIPlugin::gPlugin )
+    {
+        TurboBadgerUIPlugin::gPlugin->LogWarning( message );
+    }
+
+    else
+    {
+        CryLogAlways( message );
+    }
 }
 
 namespace tb

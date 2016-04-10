@@ -11,6 +11,7 @@ class CCryTBBitmap : public tb::TBBitmap
 {
     public:
         CCryTBBitmap( int width, int height );
+        ~CCryTBBitmap();
         // TBBitmap
         int Width() override;
         int Height() override;

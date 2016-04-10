@@ -1,5 +1,7 @@
 #include <StdAfx.h>
 #include "CryTBImageLoader.h"
+#include <FreeImage.h>
+#include <CPluginTurboBadgerUI.h>
 
 namespace tb
 {
@@ -19,12 +21,9 @@ CryTBImageLoader::CryTBImageLoader()
 
 CryTBImageLoader::~CryTBImageLoader()
 {
-    assert( gEnv );
-    assert( gEnv->pRenderer );
-
-    if ( _pTexture )
+    if ( _pBitmap )
     {
-        gEnv->pRenderer->RemoveTexture( _pTexture->GetTextureID() );
+        FreeImage_Unload( _pBitmap );
     }
 }
 
@@ -32,9 +31,9 @@ int CryTBImageLoader::Width()
 {
     int width = 0;
 
-    if ( _pTexture )
+    if ( _pBitmap )
     {
-        width = _pTexture->GetWidth();
+        width = FreeImage_GetWidth( _pBitmap );
     }
 
     return width;
@@ -44,9 +43,9 @@ int CryTBImageLoader::Height()
 {
     int height = 0;
 
-    if ( _pTexture )
+    if ( _pBitmap )
     {
-        height = _pTexture->GetHeight();
+        height = FreeImage_GetHeight( _pBitmap );
     }
 
     return height;
@@ -54,16 +53,7 @@ int CryTBImageLoader::Height()
 
 tb::uint32* CryTBImageLoader::Data()
 {
-    tb::uint32* pData = nullptr;
-
-    if ( _pTexture )
-    {
-        // FIXME: This might not work, but the function is named
-        // GetData32 so that has to mean something
-        pData = reinterpret_cast<tb::uint32*>( _pTexture->GetData32() );
-    }
-
-    return pData;
+    return reinterpret_cast<tb::uint32*>( FreeImage_GetBits( _pBitmap ) );
 }
 
 bool CryTBImageLoader::Open( string sFilename )
@@ -71,7 +61,45 @@ bool CryTBImageLoader::Open( string sFilename )
     assert( gEnv );
     assert( gEnv->pRenderer );
 
-    _pTexture = gEnv->pRenderer->EF_LoadTexture( sFilename );
+    if ( sFilename.find( "button" ) != string::npos )
+    {
+        assert( false );
+    }
 
-    return _pTexture ? true : false;
+    bool bLoadingSuccess = false;
+    ICryPak* pCryPak = gEnv->pCryPak;
+
+    if ( pCryPak->IsFileExist( sFilename ) )
+    {
+        //FILE* pHandle = pCryPak->FOpen( sFilename, "r" );
+
+        if ( true )
+        {
+            /*_pBitmap = FreeImage_LoadFromHandle( FIF_PNG,
+                                                 &TurboBadgerUIPlugin::gPlugin->GetFreeImgIO(),
+                                                 ( fi_handle )pHandle );*/
+
+            _pBitmap = FreeImage_Load( FIF_PNG, sFilename );
+
+            if ( _pBitmap )
+            {
+                // Make sure we don't have to deal with palettes
+                if ( FreeImage_GetBPP( _pBitmap ) != 32 )
+                {
+                    auto oldImage = _pBitmap;
+                    _pBitmap = FreeImage_ConvertTo32Bits( _pBitmap );
+                    FreeImage_Unload( oldImage );
+                }
+
+                FreeImage_FlipVertical( _pBitmap );
+
+                _sFilename = sFilename;
+                bLoadingSuccess = true;
+            }
+
+            //pCryPak->FClose( pHandle );
+        }
+    }
+
+    return bLoadingSuccess;
 }

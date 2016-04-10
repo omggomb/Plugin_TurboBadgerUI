@@ -79,7 +79,7 @@ size_t CCryTBFile::Read( void* buf, size_t elemSize, size_t count )
 
     if ( _pFileHandle )
     {
-        gEnv->pCryPak->FReadRaw( buf, count, elemSize, _pFileHandle );
+        read = gEnv->pCryPak->FReadRaw( buf, elemSize, count, _pFileHandle );
     }
 
     else

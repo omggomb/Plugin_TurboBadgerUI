@@ -3,7 +3,7 @@
 #pragma once
 
 #include <IPluginBase.h>
-#include <Game.h>
+//#include <Game.h>
 
 #include <IPluginManager.h>
 #include <CPluginBase.hpp>
@@ -13,6 +13,12 @@
 #define PLUGIN_NAME "TurboBadgerUI"
 #define PLUGIN_CONSOLE_PREFIX "[" PLUGIN_NAME " " PLUGIN_TEXT "] " //!< Prefix for Logentries by this plugin
 
+#include <tb_window.h>
+
+#include <FreeImage.h>
+
+class CCryTBRenderer;
+
 namespace TurboBadgerUIPlugin
 {
     /**
@@ -20,7 +26,8 @@ namespace TurboBadgerUIPlugin
     */
     class CPluginTurboBadgerUI :
         public PluginManager::CPluginBase,
-        public IPluginTurboBadgerUI
+        public IPluginTurboBadgerUI,
+        public IGameFrameworkListener
     {
         public:
             CPluginTurboBadgerUI();
@@ -32,7 +39,7 @@ namespace TurboBadgerUIPlugin
             int GetInitializationMode() const
             {
                 return int( PluginManager::IM_Default );
-            };
+            }
 
             bool Init( SSystemGlobalEnvironment& env, SSystemInitParams& startupParams, IPluginBase* pPluginManager, const char* sPluginDirectory );
 
@@ -41,22 +48,22 @@ namespace TurboBadgerUIPlugin
             const char* GetVersion() const
             {
                 return "1.0.0.0";
-            };
+            }
 
             const char* GetName() const
             {
                 return PLUGIN_NAME;
-            };
+            }
 
             const char* GetCategory() const
             {
                 return "Visual";
-            };
+            }
 
             const char* ListAuthors() const
             {
                 return "Martin 'omggomb' Voehringer <omggomb at gmx dot de>";
-            };
+            }
 
             const char* ListCVars() const;
 
@@ -65,20 +72,38 @@ namespace TurboBadgerUIPlugin
             const char* GetCurrentConcreteInterfaceVersion() const
             {
                 return "1.0";
-            };
+            }
 
             void* GetConcreteInterface( const char* sInterfaceVersion )
             {
                 return static_cast <IPluginTurboBadgerUI*>( this );
-            };
+            }
 
             // IPluginTurboBadgerUI
             IPluginBase* GetBase()
             {
                 return static_cast<IPluginBase*>( this );
-            };
+            }
+
+            // IGameFrameworkListener
+            void OnPostUpdate( float fDeltaTime ) override;
+            void OnSaveGame( ISaveGame* pSaveGame ) override {}
+            void OnLoadGame( ILoadGame* pLoadGame ) override {}
+            void OnLevelEnd( const char* nextLevel ) override {}
+            void OnActionEvent( const SActionEvent& event ) override {}
+            // ~IGameFrameworkListener
 
             // TODO: Add your concrete interface implementation
+            FreeImageIO& GetFreeImgIO()
+            {
+                return _freeImgIO;
+            }
+        private:
+            void SetupFreeImageIO();
+
+            CCryTBRenderer* _pCryTBRenderer = nullptr;
+            tb::TBWidget _rootWidget;
+            FreeImageIO _freeImgIO;
     };
 
     extern CPluginTurboBadgerUI* gPlugin;

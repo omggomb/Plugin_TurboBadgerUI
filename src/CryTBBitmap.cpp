@@ -11,6 +11,14 @@ CCryTBBitmap::CCryTBBitmap( int width, int height )
     ++s_numBitmapsCreated;
 }
 
+CCryTBBitmap::~CCryTBBitmap()
+{
+    if ( _pTexture )
+    {
+        gEnv->pRenderer->RemoveTexture( _pTexture->GetTextureID() );
+    }
+}
+
 int CCryTBBitmap::Width()
 {
     return _width;
@@ -28,20 +36,27 @@ void CCryTBBitmap::SetData( tb::uint32* data )
 
     auto pRend = gEnv->pRenderer;
 
-    if ( _pTexture )
+    if ( !_pTexture )
     {
-        pRend->RemoveTexture( _pTexture->GetTextureID() );
+        string sTextureName = "TBTexture";
+        sTextureName += s_numBitmapsCreated;
+
+        _pTexture = pRend->CreateTexture( sTextureName,
+                                          _width, _height,
+                                          _numMips,
+                                          reinterpret_cast<unsigned char*>( data ),
+                                          _cryTexFormat,
+                                          _cryFlags );
     }
 
-    string sTextureName = "TBTexture";
-    sTextureName += s_numBitmapsCreated;
-
-    _pTexture = pRend->CreateTexture( sTextureName,
-                                      _width, _height,
-                                      _numMips,
-                                      reinterpret_cast<unsigned char*>( data ),
-                                      _cryTexFormat,
-                                      _cryFlags );
+    else
+    {
+        pRend->UpdateTextureInVideoMemory( _pTexture->GetTextureID(),
+                                           reinterpret_cast<unsigned char*>( data ),
+                                           0, 0,
+                                           _width, _height,
+                                           _cryTexFormat );
+    }
 }
 
 const ITexture* CCryTBBitmap::GetCryTexture() const

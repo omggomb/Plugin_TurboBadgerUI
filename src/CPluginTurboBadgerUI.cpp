@@ -3,9 +3,59 @@
 #include <StdAfx.h>
 #include <CPluginTurboBadgerUI.h>
 #include <tb_core.h>
+#include "CryTBRenderer.h"
+#include <tb_message_window.h>
+#include <tb_widgets_reader.h>
 
 namespace TurboBadgerUIPlugin
 {
+    void HandleFreeImgError( FREE_IMAGE_FORMAT format, const char* sMessage )
+    {
+        if ( gPlugin )
+        {
+            gPlugin->LogError( sMessage );
+        }
+
+        else
+        {
+            CryWarning( EValidatorModule::VALIDATOR_MODULE_GAME,
+                        EValidatorSeverity::VALIDATOR_ERROR,
+                        sMessage );
+        }
+    }
+
+    unsigned DLL_CALLCONV FreeImgIORead( void* buffer, unsigned int size, unsigned int count, fi_handle handle )
+    {
+        assert( gEnv );
+        assert( gEnv->pCryPak );
+
+        return gEnv->pCryPak->FReadRaw( buffer, size, count, ( FILE* )handle );
+    }
+
+    unsigned DLL_CALLCONV FreeImgIOWrite( void* buffer, unsigned size, unsigned count, fi_handle handle )
+    {
+        assert( gEnv );
+        assert( gEnv->pCryPak );
+
+        return gEnv->pCryPak->FWrite( buffer, size, count, ( FILE* )handle );
+    }
+
+    int DLL_CALLCONV FreeImgIOSeek( fi_handle handle, long offset, int origin )
+    {
+        assert( gEnv );
+        assert( gEnv->pCryPak );
+
+        return gEnv->pCryPak->FSeek( ( FILE* )handle, offset, origin );
+    }
+
+    long DLL_CALLCONV FreeImgIOTell( fi_handle handle )
+    {
+        assert( gEnv );
+        assert( gEnv->pCryPak );
+
+        return gEnv->pCryPak->FTell( ( FILE* )handle );
+    }
+
     CPluginTurboBadgerUI* gPlugin = NULL;
 
     CPluginTurboBadgerUI::CPluginTurboBadgerUI()
@@ -35,7 +85,10 @@ namespace TurboBadgerUIPlugin
             {
                 if ( bWasInitialized )
                 {
+                    gEnv->pGame->GetIGameFramework()->UnregisterListener( this );
                     // TODO: Cleanup stuff that can only be cleaned up if the plugin was initialized
+                    tb::tb_core_shutdown();
+                    SAFE_DELETE( _pCryTBRenderer );
                 }
 
                 // Cleanup like this always (since the class is static its cleaned up when the dll is unloaded)
@@ -53,6 +106,23 @@ namespace TurboBadgerUIPlugin
     {
         gPluginManager = ( PluginManager::IPluginManager* )pPluginManager->GetConcreteInterface( NULL );
         CPluginBase::Init( env, startupParams, pPluginManager, sPluginDirectory );
+
+        FreeImage_SetOutputMessage( HandleFreeImgError );
+        SetupFreeImageIO();
+
+        _pCryTBRenderer = new CCryTBRenderer();
+        tb::tb_core_init( _pCryTBRenderer );
+
+        gEnv->pGame->GetIGameFramework()->RegisterListener( this, "TBUI", EFRAMEWORKLISTENERPRIORITY::FRAMEWORKLISTENERPRIORITY_HUD );
+
+        int width = gEnv->pRenderer->GetWidth();
+        int height = gEnv->pRenderer->GetHeight();
+
+        auto blah = tb::TBRect( 0, 0, width, height );
+        _rootWidget.SetRect( blah );
+
+        bool b = tb::g_tb_skin->Load( ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\resources\\default_skin\\skin.tb.txt" );
+        b = tb::g_widgets_reader->LoadFile( &_rootWidget, ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\ui_resources\\test_textwindow.tb.txt" );
 
         return true;
     }
@@ -140,6 +210,28 @@ namespace TurboBadgerUIPlugin
     const char* CPluginTurboBadgerUI::GetStatus() const
     {
         return "OK";
+    }
+
+    void CPluginTurboBadgerUI::OnPostUpdate( float fDeltaTime )
+    {
+        tb::TBMessageHandler::ProcessMessages();
+        _rootWidget.InvokeProcessStates();
+        _rootWidget.InvokeProcess();
+
+        _pCryTBRenderer->BeginPaint( gEnv->pRenderer->GetWidth(),
+                                     gEnv->pRenderer->GetHeight() );
+
+        _rootWidget.InvokePaint( tb::TBWidget::PaintProps() );
+
+        _pCryTBRenderer->EndPaint();
+    }
+
+    void CPluginTurboBadgerUI::SetupFreeImageIO()
+    {
+        _freeImgIO.read_proc = FreeImgIORead;
+        _freeImgIO.seek_proc = FreeImgIOSeek;
+        _freeImgIO.tell_proc = FreeImgIOTell;
+        _freeImgIO.write_proc = FreeImgIOWrite;
     }
 
     // TODO: Add your plugin concrete interface implementation

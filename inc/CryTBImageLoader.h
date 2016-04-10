@@ -1,6 +1,7 @@
 #pragma once
 
 #include <tb_bitmap_fragment.h>
+#include <FreeImage.h>
 
 class CryTBImageLoader : public tb::TBImageLoader
 {
@@ -26,8 +27,7 @@ class CryTBImageLoader : public tb::TBImageLoader
         bool Open( string sFilename );
 
     private:
-        /// <summary>
-        /// The CE texture used to get the desirec information
-        /// </summary>
-        ITexture* _pTexture = nullptr;
+        FIBITMAP* _pBitmap = nullptr;
+        string _sFilename = "";
+        tb::uint32* _pData = nullptr;
 };

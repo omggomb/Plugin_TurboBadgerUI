@@ -6,6 +6,8 @@
 #include "CryTBRenderer.h"
 #include <tb_message_window.h>
 #include <tb_widgets_reader.h>
+#include <tb_language.h>
+#include <tb_font_renderer.h>
 
 namespace TurboBadgerUIPlugin
 {
@@ -118,11 +120,33 @@ namespace TurboBadgerUIPlugin
         int width = gEnv->pRenderer->GetWidth();
         int height = gEnv->pRenderer->GetHeight();
 
-        auto blah = tb::TBRect( 0, 0, width, height );
+        auto blah = tb::TBRect( 0, 0, width / 2, height / 2 );
         _rootWidget.SetRect( blah );
 
-        bool b = tb::g_tb_skin->Load( ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\resources\\default_skin\\skin.tb.txt" );
-        b = tb::g_widgets_reader->LoadFile( &_rootWidget, ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\ui_resources\\test_textwindow.tb.txt" );
+        bool b = tb::g_tb_lng->Load( ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\resources\\language\\lng_en.tb.txt" );
+        b = tb::g_tb_skin->Load( ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\resources\\default_skin\\skin.tb.txt" , ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\resources\\skin\\skin.tb.txt" );
+
+        void register_tbbf_font_renderer();
+
+        register_tbbf_font_renderer();
+
+        tb::g_font_manager->AddFontInfo( ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\resources\\default_font\\segoe_white_with_shadow.tb.txt", "Segoe" );
+
+        tb::TBFontDescription desc;
+        desc.SetID( tb::TBID( "Segoe" ) );
+        desc.SetSize( tb::g_tb_skin->GetDimensionConverter()->DpToPx( 14 ) );
+        tb::g_font_manager->SetDefaultFontDescription( desc );
+
+        // Create the font now.
+        tb::TBFontFace* font = tb::g_font_manager->CreateFontFace( tb::g_font_manager->GetDefaultFontDescription() );
+
+        // Render some glyphs in one go now since we know we are going to use them. It would work fine
+        // without this since glyphs are rendered when needed, but with some extra updating of the glyph bitmap.
+        //if (font)
+        //font->RenderGlyphs(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~•·åäöÅÄÖ");
+
+
+        b = tb::g_widgets_reader->LoadFile( &_rootWidget, ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\ui_resources\\test_myUI.tb.txt" );
 
         return true;
     }

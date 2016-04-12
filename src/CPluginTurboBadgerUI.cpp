@@ -117,10 +117,16 @@ namespace TurboBadgerUIPlugin
 
         gEnv->pGame->GetIGameFramework()->RegisterListener( this, "TBUI", EFRAMEWORKLISTENERPRIORITY::FRAMEWORKLISTENERPRIORITY_HUD );
 
-        int width = gEnv->pRenderer->GetWidth();
-        int height = gEnv->pRenderer->GetHeight();
+		int width = 128; 
+		int height = 128; 
+		
+		/*width = gEnv->pRenderer->GetHeight();
+		height = gEnv->pRenderer->GetWidth();*/
 
-        auto blah = tb::TBRect( 0, 0, width / 2, height / 2 );
+		width = 128;
+		height = 512;
+
+        auto blah = tb::TBRect( 0, 0, width, height);
         _rootWidget.SetRect( blah );
 
         bool b = tb::g_tb_lng->Load( ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\resources\\language\\lng_en.tb.txt" );
@@ -146,8 +152,13 @@ namespace TurboBadgerUIPlugin
         //font->RenderGlyphs(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~•·åäöÅÄÖ");
 
 
-        b = tb::g_widgets_reader->LoadFile( &_rootWidget, ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\ui_resources\\test_myUI.tb.txt" );
+		auto window = new tb::TBWindow();
+        b = tb::g_widgets_reader->LoadFile( window, ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\ui_resources\\test_myUI.tb.txt" );
 
+		_rootWidget.AddChild(window);
+
+		window->ResizeToFitContent();
+		window->EnsureFocus();
         return true;
     }
 

@@ -8,7 +8,7 @@
 #include <tb_widgets_reader.h>
 #include <tb_language.h>
 #include <tb_font_renderer.h>
-
+#include <IHardwareMouse.h>
 namespace TurboBadgerUIPlugin
 {
 	void HandleFreeImgError(FREE_IMAGE_FORMAT format, const char* sMessage)
@@ -155,7 +155,7 @@ namespace TurboBadgerUIPlugin
 		//font->RenderGlyphs(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~•·åäöÅÄÖ");
 
 		auto window = new tb::TBWindow();
-		b = tb::g_widgets_reader->LoadFile(window, ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\ui_resources\\test_myUI.tb.txt");
+		b = tb::g_widgets_reader->LoadFile(window, ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\ui_resources\\test_select.tb.txt");
 
 		_rootWidget.AddChild(window);
 
@@ -284,6 +284,12 @@ namespace TurboBadgerUIPlugin
 		return bRet;
 	}
 
+	bool CPluginTurboBadgerUI::OnInputEventUI(const SUnicodeEvent & event)
+	{
+		// TODO: Add special and modifierkeys
+		return _rootWidget.InvokeKey(event.inputChar, tb::SPECIAL_KEY::TB_KEY_UNDEFINED, tb::TB_MODIFIER_NONE, true);
+	}
+
 	void CPluginTurboBadgerUI::SetupFreeImageIO()
 	{
 		_freeImgIO.read_proc = FreeImgIORead;
@@ -294,25 +300,34 @@ namespace TurboBadgerUIPlugin
 
 	bool CPluginTurboBadgerUI::HandleMouseEvents(const SInputEvent& event)
 	{
-		int x = 0;
-		int y = 0;
+		float x = 0;
+		float y = 0;
+
+		gEnv->pHardwareMouse->GetHardwareMouseClientPosition(&x, &y);
 
 		switch (event.keyId)
 		{
-		case (eKI_MouseX) :
-			x = event.value;
-			break;
-		case (eKI_MouseY) :
-			y = event.value;
-			break;
+		case (eKI_Mouse1) :
+		{
+			if (event.state == eIS_Pressed)
+			{
+				_rootWidget.InvokePointerDown(x, y, 1, tb::TB_MODIFIER_NONE, false);
+			}
+			else if (event.state == eIS_Released)
+			{
+				_rootWidget.InvokePointerUp(x, y, tb::TB_MODIFIER_NONE, false);
+			}
+		}
 		default:
 			break;
 		}
 
-		if (x != 0 || y != 0)
+		if (event.keyId == eKI_MouseX || event.keyId == eKI_MouseY)
 		{
 			_rootWidget.InvokePointerMove(x, y, tb::TB_MODIFIER_NONE, false);
 		}
+
+		//SAFE_DELETE(point);
 
 		// FIXME: Make this dependant on whether the UI should actually receive exclusively
 		return true;

@@ -27,7 +27,8 @@ namespace TurboBadgerUIPlugin
     class CPluginTurboBadgerUI :
         public PluginManager::CPluginBase,
         public IPluginTurboBadgerUI,
-        public IGameFrameworkListener
+        public IGameFrameworkListener,
+        public IInputEventListener
     {
         public:
             CPluginTurboBadgerUI();
@@ -93,6 +94,14 @@ namespace TurboBadgerUIPlugin
             void OnActionEvent( const SActionEvent& event ) override {}
             // ~IGameFrameworkListener
 
+            // IInputEvenListener
+            bool OnInputEvent( const SInputEvent& event ) override;
+            bool OnInputEventUI( const SUnicodeEvent& event ) override
+            {
+                return false;
+            }
+            // ~IInputEventListener
+
             // TODO: Add your concrete interface implementation
             FreeImageIO& GetFreeImgIO()
             {
@@ -100,6 +109,9 @@ namespace TurboBadgerUIPlugin
             }
         private:
             void SetupFreeImageIO();
+
+            bool HandleMouseEvents( const SInputEvent& event );
+            bool HandleKeyboardEvents( const SInputEvent& event );
 
             CCryTBRenderer* _pCryTBRenderer = nullptr;
             tb::TBWidget _rootWidget;

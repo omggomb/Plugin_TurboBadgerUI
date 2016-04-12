@@ -11,263 +11,317 @@
 
 namespace TurboBadgerUIPlugin
 {
-    void HandleFreeImgError( FREE_IMAGE_FORMAT format, const char* sMessage )
-    {
-        if ( gPlugin )
-        {
-            gPlugin->LogError( sMessage );
-        }
+	void HandleFreeImgError(FREE_IMAGE_FORMAT format, const char* sMessage)
+	{
+		if (gPlugin)
+		{
+			gPlugin->LogError(sMessage);
+		}
 
-        else
-        {
-            CryWarning( EValidatorModule::VALIDATOR_MODULE_GAME,
-                        EValidatorSeverity::VALIDATOR_ERROR,
-                        sMessage );
-        }
-    }
+		else
+		{
+			CryWarning(EValidatorModule::VALIDATOR_MODULE_GAME,
+				EValidatorSeverity::VALIDATOR_ERROR,
+				sMessage);
+		}
+	}
 
-    unsigned DLL_CALLCONV FreeImgIORead( void* buffer, unsigned int size, unsigned int count, fi_handle handle )
-    {
-        assert( gEnv );
-        assert( gEnv->pCryPak );
+	unsigned DLL_CALLCONV FreeImgIORead(void* buffer, unsigned int size, unsigned int count, fi_handle handle)
+	{
+		assert(gEnv);
+		assert(gEnv->pCryPak);
 
-        return gEnv->pCryPak->FReadRaw( buffer, size, count, ( FILE* )handle );
-    }
+		return gEnv->pCryPak->FReadRaw(buffer, size, count, (FILE*)handle);
+	}
 
-    unsigned DLL_CALLCONV FreeImgIOWrite( void* buffer, unsigned size, unsigned count, fi_handle handle )
-    {
-        assert( gEnv );
-        assert( gEnv->pCryPak );
+	unsigned DLL_CALLCONV FreeImgIOWrite(void* buffer, unsigned size, unsigned count, fi_handle handle)
+	{
+		assert(gEnv);
+		assert(gEnv->pCryPak);
 
-        return gEnv->pCryPak->FWrite( buffer, size, count, ( FILE* )handle );
-    }
+		return gEnv->pCryPak->FWrite(buffer, size, count, (FILE*)handle);
+	}
 
-    int DLL_CALLCONV FreeImgIOSeek( fi_handle handle, long offset, int origin )
-    {
-        assert( gEnv );
-        assert( gEnv->pCryPak );
+	int DLL_CALLCONV FreeImgIOSeek(fi_handle handle, long offset, int origin)
+	{
+		assert(gEnv);
+		assert(gEnv->pCryPak);
 
-        return gEnv->pCryPak->FSeek( ( FILE* )handle, offset, origin );
-    }
+		return gEnv->pCryPak->FSeek((FILE*)handle, offset, origin);
+	}
 
-    long DLL_CALLCONV FreeImgIOTell( fi_handle handle )
-    {
-        assert( gEnv );
-        assert( gEnv->pCryPak );
+	long DLL_CALLCONV FreeImgIOTell(fi_handle handle)
+	{
+		assert(gEnv);
+		assert(gEnv->pCryPak);
 
-        return gEnv->pCryPak->FTell( ( FILE* )handle );
-    }
+		return gEnv->pCryPak->FTell((FILE*)handle);
+	}
 
-    CPluginTurboBadgerUI* gPlugin = NULL;
+	CPluginTurboBadgerUI* gPlugin = NULL;
 
-    CPluginTurboBadgerUI::CPluginTurboBadgerUI()
-    {
-        gPlugin = this;
-    }
+	CPluginTurboBadgerUI::CPluginTurboBadgerUI()
+	{
+		gPlugin = this;
+	}
 
-    CPluginTurboBadgerUI::~CPluginTurboBadgerUI()
-    {
-        Release( true );
+	CPluginTurboBadgerUI::~CPluginTurboBadgerUI()
+	{
+		Release(true);
 
-        gPlugin = NULL;
-    }
+		gPlugin = NULL;
+	}
 
-    bool CPluginTurboBadgerUI::Release( bool bForce )
-    {
-        bool bRet = true;
-        bool bWasInitialized = m_bIsFullyInitialized; // Will be reset by base class so backup
+	bool CPluginTurboBadgerUI::Release(bool bForce)
+	{
+		bool bRet = true;
+		bool bWasInitialized = m_bIsFullyInitialized; // Will be reset by base class so backup
 
-        if ( !m_bCanUnload )
-        {
-            // Note: Type Unregistration will be automatically done by the Base class (Through RegisterTypes)
-            // Should be called while Game is still active otherwise there might be leaks/problems
-            bRet = CPluginBase::Release( bForce );
+		if (!m_bCanUnload)
+		{
+			// Note: Type Unregistration will be automatically done by the Base class (Through RegisterTypes)
+			// Should be called while Game is still active otherwise there might be leaks/problems
+			bRet = CPluginBase::Release(bForce);
 
-            if ( bRet )
-            {
-                if ( bWasInitialized )
-                {
-                    gEnv->pGame->GetIGameFramework()->UnregisterListener( this );
-                    // TODO: Cleanup stuff that can only be cleaned up if the plugin was initialized
-                    tb::tb_core_shutdown();
-                    SAFE_DELETE( _pCryTBRenderer );
-                }
+			if (bRet)
+			{
+				if (bWasInitialized)
+				{
+					gEnv->pGame->GetIGameFramework()->UnregisterListener(this);
+					// TODO: Cleanup stuff that can only be cleaned up if the plugin was initialized
+					tb::tb_core_shutdown();
+					SAFE_DELETE(_pCryTBRenderer);
+				}
 
-                // Cleanup like this always (since the class is static its cleaned up when the dll is unloaded)
-                gPluginManager->UnloadPlugin( GetName() );
+				// Cleanup like this always (since the class is static its cleaned up when the dll is unloaded)
+				gPluginManager->UnloadPlugin(GetName());
 
-                // Allow Plugin Manager garbage collector to unload this plugin
-                AllowDllUnload();
-            }
-        }
+				// Allow Plugin Manager garbage collector to unload this plugin
+				AllowDllUnload();
+			}
+		}
 
-        return bRet;
-    };
+		return bRet;
+	};
 
-    bool CPluginTurboBadgerUI::Init( SSystemGlobalEnvironment& env, SSystemInitParams& startupParams, IPluginBase* pPluginManager, const char* sPluginDirectory )
-    {
-        gPluginManager = ( PluginManager::IPluginManager* )pPluginManager->GetConcreteInterface( NULL );
-        CPluginBase::Init( env, startupParams, pPluginManager, sPluginDirectory );
+	bool CPluginTurboBadgerUI::Init(SSystemGlobalEnvironment& env, SSystemInitParams& startupParams, IPluginBase* pPluginManager, const char* sPluginDirectory)
+	{
+		gPluginManager = (PluginManager::IPluginManager*)pPluginManager->GetConcreteInterface(NULL);
+		CPluginBase::Init(env, startupParams, pPluginManager, sPluginDirectory);
 
-        FreeImage_SetOutputMessage( HandleFreeImgError );
-        SetupFreeImageIO();
+		FreeImage_SetOutputMessage(HandleFreeImgError);
+		SetupFreeImageIO();
 
-        _pCryTBRenderer = new CCryTBRenderer();
-        tb::tb_core_init( _pCryTBRenderer );
+		_pCryTBRenderer = new CCryTBRenderer();
+		tb::tb_core_init(_pCryTBRenderer);
 
-        gEnv->pGame->GetIGameFramework()->RegisterListener( this, "TBUI", EFRAMEWORKLISTENERPRIORITY::FRAMEWORKLISTENERPRIORITY_HUD );
+		gEnv->pGame->GetIGameFramework()->RegisterListener(this, "TBUI", EFRAMEWORKLISTENERPRIORITY::FRAMEWORKLISTENERPRIORITY_HUD);
+		gEnv->pInput->AddEventListener(this);
 
-		int width = 128; 
-		int height = 128; 
-		
+		int width = 128;
+		int height = 128;
+
 		/*width = gEnv->pRenderer->GetHeight();
 		height = gEnv->pRenderer->GetWidth();*/
 
 		width = 128;
 		height = 512;
 
-        auto blah = tb::TBRect( 0, 0, width, height);
-        _rootWidget.SetRect( blah );
+		auto blah = tb::TBRect(0, 0, width, height);
+		_rootWidget.SetRect(blah);
 
-        bool b = tb::g_tb_lng->Load( ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\resources\\language\\lng_en.tb.txt" );
-        b = tb::g_tb_skin->Load( ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\resources\\default_skin\\skin.tb.txt" , ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\resources\\skin\\skin.tb.txt" );
+		bool b = tb::g_tb_lng->Load(".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\resources\\language\\lng_en.tb.txt");
+		b = tb::g_tb_skin->Load(".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\resources\\default_skin\\skin.tb.txt", ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\resources\\skin\\skin.tb.txt");
 
-        void register_tbbf_font_renderer();
+		void register_tbbf_font_renderer();
 
-        register_tbbf_font_renderer();
+		register_tbbf_font_renderer();
 
-        tb::g_font_manager->AddFontInfo( ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\resources\\default_font\\segoe_white_with_shadow.tb.txt", "Segoe" );
+		tb::g_font_manager->AddFontInfo(".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\resources\\default_font\\segoe_white_with_shadow.tb.txt", "Segoe");
 
-        tb::TBFontDescription desc;
-        desc.SetID( tb::TBID( "Segoe" ) );
-        desc.SetSize( tb::g_tb_skin->GetDimensionConverter()->DpToPx( 14 ) );
-        tb::g_font_manager->SetDefaultFontDescription( desc );
+		tb::TBFontDescription desc;
+		desc.SetID(tb::TBID("Segoe"));
+		desc.SetSize(tb::g_tb_skin->GetDimensionConverter()->DpToPx(14));
+		tb::g_font_manager->SetDefaultFontDescription(desc);
 
-        // Create the font now.
-        tb::TBFontFace* font = tb::g_font_manager->CreateFontFace( tb::g_font_manager->GetDefaultFontDescription() );
+		ShowCursor(true);
 
-        // Render some glyphs in one go now since we know we are going to use them. It would work fine
-        // without this since glyphs are rendered when needed, but with some extra updating of the glyph bitmap.
-        //if (font)
-        //font->RenderGlyphs(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~•·åäöÅÄÖ");
+		// Create the font now.
+		tb::TBFontFace* font = tb::g_font_manager->CreateFontFace(tb::g_font_manager->GetDefaultFontDescription());
 
+		// Render some glyphs in one go now since we know we are going to use them. It would work fine
+		// without this since glyphs are rendered when needed, but with some extra updating of the glyph bitmap.
+		//if (font)
+		//font->RenderGlyphs(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~•·åäöÅÄÖ");
 
 		auto window = new tb::TBWindow();
-        b = tb::g_widgets_reader->LoadFile( window, ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\ui_resources\\test_myUI.tb.txt" );
+		b = tb::g_widgets_reader->LoadFile(window, ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\ui_resources\\test_myUI.tb.txt");
 
 		_rootWidget.AddChild(window);
 
 		window->ResizeToFitContent();
 		window->EnsureFocus();
-        return true;
-    }
+		return true;
+	}
 
-    bool CPluginTurboBadgerUI::RegisterTypes( int nFactoryType, bool bUnregister )
-    {
-        // Note: Autoregister Flownodes will be automatically registered by the Base class
-        bool bRet = CPluginBase::RegisterTypes( nFactoryType, bUnregister );
+	bool CPluginTurboBadgerUI::RegisterTypes(int nFactoryType, bool bUnregister)
+	{
+		// Note: Autoregister Flownodes will be automatically registered by the Base class
+		bool bRet = CPluginBase::RegisterTypes(nFactoryType, bUnregister);
 
-        using namespace PluginManager;
-        eFactoryType enFactoryType = eFactoryType( nFactoryType );
+		using namespace PluginManager;
+		eFactoryType enFactoryType = eFactoryType(nFactoryType);
 
-        if ( bRet )
-        {
-            if ( gEnv && gEnv->pSystem && !gEnv->pSystem->IsQuitting() )
-            {
-                // UIEvents
-                if ( gEnv->pConsole && ( enFactoryType == FT_All || enFactoryType == FT_UIEvent ) )
-                {
-                    if ( !bUnregister )
-                    {
-                        // TODO: Register CVars here if you have some
-                        // ...
-                    }
+		if (bRet)
+		{
+			if (gEnv && gEnv->pSystem && !gEnv->pSystem->IsQuitting())
+			{
+				// UIEvents
+				if (gEnv->pConsole && (enFactoryType == FT_All || enFactoryType == FT_UIEvent))
+				{
+					if (!bUnregister)
+					{
+						// TODO: Register CVars here if you have some
+						// ...
+					}
 
-                    else
-                    {
-                        // TODO: Unregister CVars here if you have some
-                        // ...
-                    }
-                }
+					else
+					{
+						// TODO: Unregister CVars here if you have some
+						// ...
+					}
+				}
 
-                // CVars
-                if ( gEnv->pConsole && ( enFactoryType == FT_All || enFactoryType == FT_CVar ) )
-                {
-                    if ( !bUnregister )
-                    {
-                        // TODO: Register CVars here if you have some
-                        // ...
-                    }
+				// CVars
+				if (gEnv->pConsole && (enFactoryType == FT_All || enFactoryType == FT_CVar))
+				{
+					if (!bUnregister)
+					{
+						// TODO: Register CVars here if you have some
+						// ...
+					}
 
-                    else
-                    {
-                        // TODO: Unregister CVars here if you have some
-                        // ...
-                    }
-                }
+					else
+					{
+						// TODO: Unregister CVars here if you have some
+						// ...
+					}
+				}
 
-                // CVars Commands
-                if ( gEnv->pConsole && ( enFactoryType == FT_All || enFactoryType == FT_CVarCommand ) )
-                {
-                    if ( !bUnregister )
-                    {
-                        // TODO: Register CVar Commands here if you have some
-                        // ...
-                    }
+				// CVars Commands
+				if (gEnv->pConsole && (enFactoryType == FT_All || enFactoryType == FT_CVarCommand))
+				{
+					if (!bUnregister)
+					{
+						// TODO: Register CVar Commands here if you have some
+						// ...
+					}
 
-                    else
-                    {
-                        // TODO: Unregister CVar Commands here if you have some
-                        // ...
-                    }
-                }
+					else
+					{
+						// TODO: Unregister CVar Commands here if you have some
+						// ...
+					}
+				}
 
-                // Game Objects
-                if ( gEnv->pGame && gEnv->pGame->GetIGameFramework() && ( enFactoryType == FT_All || enFactoryType == FT_GameObjectExtension ) )
-                {
-                    if ( !bUnregister )
-                    {
-                        // TODO: Register Game Object Extensions here if you have some
-                        // ...
-                    }
-                }
-            }
-        }
+				// Game Objects
+				if (gEnv->pGame && gEnv->pGame->GetIGameFramework() && (enFactoryType == FT_All || enFactoryType == FT_GameObjectExtension))
+				{
+					if (!bUnregister)
+					{
+						// TODO: Register Game Object Extensions here if you have some
+						// ...
+					}
+				}
+			}
+		}
 
-        return bRet;
-    }
+		return bRet;
+	}
 
-    const char* CPluginTurboBadgerUI::ListCVars() const
-    {
-        return "..."; // TODO: Enter CVARs/Commands here if you have some
-    }
+	const char* CPluginTurboBadgerUI::ListCVars() const
+	{
+		return "..."; // TODO: Enter CVARs/Commands here if you have some
+	}
 
-    const char* CPluginTurboBadgerUI::GetStatus() const
-    {
-        return "OK";
-    }
+	const char* CPluginTurboBadgerUI::GetStatus() const
+	{
+		return "OK";
+	}
 
-    void CPluginTurboBadgerUI::OnPostUpdate( float fDeltaTime )
-    {
-        tb::TBMessageHandler::ProcessMessages();
-        _rootWidget.InvokeProcessStates();
-        _rootWidget.InvokeProcess();
+	void CPluginTurboBadgerUI::OnPostUpdate(float fDeltaTime)
+	{
+		tb::TBMessageHandler::ProcessMessages();
+		_rootWidget.InvokeProcessStates();
+		_rootWidget.InvokeProcess();
 
-        _pCryTBRenderer->BeginPaint( gEnv->pRenderer->GetWidth(),
-                                     gEnv->pRenderer->GetHeight() );
+		_pCryTBRenderer->BeginPaint(gEnv->pRenderer->GetWidth(),
+			gEnv->pRenderer->GetHeight());
 
-        _rootWidget.InvokePaint( tb::TBWidget::PaintProps() );
+		_rootWidget.InvokePaint(tb::TBWidget::PaintProps());
 
-        _pCryTBRenderer->EndPaint();
-    }
+		_pCryTBRenderer->EndPaint();
+	}
 
-    void CPluginTurboBadgerUI::SetupFreeImageIO()
-    {
-        _freeImgIO.read_proc = FreeImgIORead;
-        _freeImgIO.seek_proc = FreeImgIOSeek;
-        _freeImgIO.tell_proc = FreeImgIOTell;
-        _freeImgIO.write_proc = FreeImgIOWrite;
-    }
+	bool CPluginTurboBadgerUI::OnInputEvent(const SInputEvent& event)
+	{
+		bool bRet = false;
 
-    // TODO: Add your plugin concrete interface implementation
+		switch (event.deviceType)
+		{
+		case (eIDT_Mouse) :
+			bRet = HandleMouseEvents(event);
+			break;
+
+		case (eIDT_Keyboard) :
+			bRet = HandleKeyboardEvents(event);
+			break;
+
+		default:
+			break;
+		}
+
+		return bRet;
+	}
+
+	void CPluginTurboBadgerUI::SetupFreeImageIO()
+	{
+		_freeImgIO.read_proc = FreeImgIORead;
+		_freeImgIO.seek_proc = FreeImgIOSeek;
+		_freeImgIO.tell_proc = FreeImgIOTell;
+		_freeImgIO.write_proc = FreeImgIOWrite;
+	}
+
+	bool CPluginTurboBadgerUI::HandleMouseEvents(const SInputEvent& event)
+	{
+		int x = 0;
+		int y = 0;
+
+		switch (event.keyId)
+		{
+		case (eKI_MouseX) :
+			x = event.value;
+			break;
+		case (eKI_MouseY) :
+			y = event.value;
+			break;
+		default:
+			break;
+		}
+
+		if (x != 0 || y != 0)
+		{
+			_rootWidget.InvokePointerMove(x, y, tb::TB_MODIFIER_NONE, false);
+		}
+
+		// FIXME: Make this dependant on whether the UI should actually receive exclusively
+		return true;
+	}
+
+	bool CPluginTurboBadgerUI::HandleKeyboardEvents(const SInputEvent& event)
+	{
+		return false;
+	}
+
+	// TODO: Add your plugin concrete interface implementation
 }

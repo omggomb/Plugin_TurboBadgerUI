@@ -9,6 +9,8 @@
 #include <tb_language.h>
 #include <tb_font_renderer.h>
 #include <IHardwareMouse.h>
+
+#include "CryTBUIKeyUtils.h"
 namespace TurboBadgerUIPlugin
 {
 	void HandleFreeImgError(FREE_IMAGE_FORMAT format, const char* sMessage)
@@ -286,8 +288,15 @@ namespace TurboBadgerUIPlugin
 
 	bool CPluginTurboBadgerUI::OnInputEventUI(const SUnicodeEvent & event)
 	{
-		// TODO: Add special and modifierkeys
-		return _rootWidget.InvokeKey(event.inputChar, tb::SPECIAL_KEY::TB_KEY_UNDEFINED, tb::TB_MODIFIER_NONE, true);
+		// MODIFIERS
+
+		tb::MODIFIER_KEYS modifierKeys = CCryTBUIKeyUtils::CryModiToTBModi((EModifierMask)gEnv->pInput->GetModifiers());
+
+		// SPECIAL KEYS
+		tb::SPECIAL_KEY specialKey = CCryTBUIKeyUtils::CryUniToTBSpecial(event.inputChar);
+
+		// FIXME: Make this dependant on whether the UI should actually receive exclusively
+		return _rootWidget.InvokeKey(event.inputChar, specialKey, modifierKeys, true);
 	}
 
 	void CPluginTurboBadgerUI::SetupFreeImageIO()

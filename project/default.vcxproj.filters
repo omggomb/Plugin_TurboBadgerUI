@@ -30,6 +30,9 @@
     <Filter Include="Source Files\TurbobadgerImpl">
       <UniqueIdentifier>{31ef69ac-221e-4e10-bf6e-44cfe0e50023}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{855d2a3e-419e-4e56-8409-c0decd24f992}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\readme.md" />
@@ -107,6 +110,9 @@
     </ClInclude>
     <ClInclude Include="..\inc\CryTBBitmap.h">
       <Filter>Header Files\TurbobadgerImpl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\CryTBUIKeyUtils.h">
+      <Filter>Header Files\Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

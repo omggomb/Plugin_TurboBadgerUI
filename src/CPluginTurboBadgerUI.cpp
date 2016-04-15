@@ -124,11 +124,11 @@ namespace TurboBadgerUIPlugin
 		int width = 128;
 		int height = 128;
 
-		/*width = gEnv->pRenderer->GetHeight();
-		height = gEnv->pRenderer->GetWidth();*/
+		width = gEnv->pRenderer->GetWidth();
+		height = gEnv->pRenderer->GetHeight();
 
-		width = 128;
-		height = 512;
+		/*width = 128;
+		height = 512;*/
 
 		auto blah = tb::TBRect(0, 0, width, height);
 		_rootWidget.SetRect(blah);
@@ -164,6 +164,15 @@ namespace TurboBadgerUIPlugin
 
 		window->ResizeToFitContent();
 		window->EnsureFocus();
+
+		window = new tb::TBWindow();
+		tb::g_widgets_reader->LoadFile(window, ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\ui_resources\\test_textwindow.tb.txt");
+
+		_rootWidget.AddChild(window);
+
+		window->ResizeToFitContent();
+		window->EnsureFocus();
+
 		return true;
 	}
 

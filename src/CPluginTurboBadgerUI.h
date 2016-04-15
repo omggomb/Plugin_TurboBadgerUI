@@ -110,7 +110,8 @@ namespace TurboBadgerUIPlugin
 
 		bool HandleMouseEvents(const SInputEvent& event);
 		bool HandleKeyboardEvents(const SInputEvent& event);
-
+		// TODO: Move to CVar
+		const int GetMWheelInvertFactor() const { return -1; }
 		CCryTBRenderer* _pCryTBRenderer = nullptr;
 		tb::TBWidget _rootWidget;
 		FreeImageIO _freeImgIO;

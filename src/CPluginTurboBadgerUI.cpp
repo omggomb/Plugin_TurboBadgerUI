@@ -9,6 +9,7 @@
 #include <tb_language.h>
 #include <tb_font_renderer.h>
 #include <IHardwareMouse.h>
+#include <tb_system.h>
 
 #include "CryTBUIKeyUtils.h"
 namespace TurboBadgerUIPlugin
@@ -157,7 +158,7 @@ namespace TurboBadgerUIPlugin
 		//font->RenderGlyphs(" !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~•·åäöÅÄÖ");
 
 		auto window = new tb::TBWindow();
-		b = tb::g_widgets_reader->LoadFile(window, ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\ui_resources\\test_select.tb.txt");
+		b = tb::g_widgets_reader->LoadFile(window, ".\\bin\\win_x64\\Plugins\\TurboBadgerUI\\ui_resources\\test_textwindow.tb.txt");
 
 		_rootWidget.AddChild(window);
 
@@ -269,34 +270,24 @@ namespace TurboBadgerUIPlugin
 	{
 		bool bRet = false;
 
-		switch (event.deviceType)
+		if (!gEnv->pConsole->IsOpened()) // Don't handle input if console is open
 		{
-		case (eIDT_Mouse) :
-			bRet = HandleMouseEvents(event);
-			break;
+			switch (event.deviceType)
+			{
+			case (eIDT_Mouse) :
+				bRet = HandleMouseEvents(event);
+				break;
 
-		case (eIDT_Keyboard) :
-			bRet = HandleKeyboardEvents(event);
-			break;
+			case (eIDT_Keyboard) :
+				bRet = HandleKeyboardEvents(event);
+				break;
 
-		default:
-			break;
+			default:
+				break;
+			}
 		}
 
 		return bRet;
-	}
-
-	bool CPluginTurboBadgerUI::OnInputEventUI(const SUnicodeEvent & event)
-	{
-		// MODIFIERS
-
-		tb::MODIFIER_KEYS modifierKeys = CCryTBUIKeyUtils::CryModiToTBModi((EModifierMask)gEnv->pInput->GetModifiers());
-
-		// SPECIAL KEYS
-		tb::SPECIAL_KEY specialKey = CCryTBUIKeyUtils::CryUniToTBSpecial(event.inputChar);
-
-		// FIXME: Make this dependant on whether the UI should actually receive exclusively
-		return _rootWidget.InvokeKey(event.inputChar, specialKey, modifierKeys, true);
 	}
 
 	void CPluginTurboBadgerUI::SetupFreeImageIO()
@@ -311,8 +302,9 @@ namespace TurboBadgerUIPlugin
 	{
 		float x = 0;
 		float y = 0;
-
 		gEnv->pHardwareMouse->GetHardwareMouseClientPosition(&x, &y);
+
+		tb::MODIFIER_KEYS modifiers = CCryTBUIKeyUtils::CryModiToTBModi((EModifierMask)event.modifiers);
 
 		switch (event.keyId)
 		{
@@ -320,30 +312,66 @@ namespace TurboBadgerUIPlugin
 		{
 			if (event.state == eIS_Pressed)
 			{
-				_rootWidget.InvokePointerDown(x, y, 1, tb::TB_MODIFIER_NONE, false);
+				_rootWidget.InvokePointerDown(x, y, 1, modifiers, false);
 			}
 			else if (event.state == eIS_Released)
 			{
-				_rootWidget.InvokePointerUp(x, y, tb::TB_MODIFIER_NONE, false);
+				_rootWidget.InvokePointerUp(x, y, modifiers, false);
 			}
-		}
+		} break;
+		case(eKI_Mouse2) :
+		case(eKI_Mouse3) :
+		{
+			// TODO: Handle middle and right mouse button (Need to use TBEvents for that
+		}break;
+		case(eKI_MouseWheelUp) :
+		case(eKI_MouseWheelDown) :
+		{
+			if (event.state == eIS_Pressed) // Only handle once
+			{
+				int delta = (int)event.value / tb::TBSystem::GetPixelsPerLine() * GetMWheelInvertFactor();
+				_rootWidget.InvokeWheel(x, y, 0, delta, modifiers);
+			}
+		}break;
+		case (eKI_MouseX) :
+		case (eKI_MouseY) :
+		{
+			_rootWidget.InvokePointerMove(x, y, modifiers, false);
+		}break;
 		default:
 			break;
 		}
 
-		if (event.keyId == eKI_MouseX || event.keyId == eKI_MouseY)
-		{
-			_rootWidget.InvokePointerMove(x, y, tb::TB_MODIFIER_NONE, false);
-		}
+		// FIXME: Make this dependant on whether the UI should actually receive exclusively
+		return false;
+	}
 
-		//SAFE_DELETE(point);
+	bool CPluginTurboBadgerUI::OnInputEventUI(const SUnicodeEvent & event)
+	{
+		// MODIFIERS
+
+		tb::MODIFIER_KEYS modifierKeys = CCryTBUIKeyUtils::CryModiToTBModi((EModifierMask)gEnv->pInput->GetModifiers());
+
+		// SPECIAL KEYS
+		tb::SPECIAL_KEY specialKey = CCryTBUIKeyUtils::CryUniToTBSpecial(event.inputChar);
 
 		// FIXME: Make this dependant on whether the UI should actually receive exclusively
-		return true;
+		_rootWidget.InvokeKey(event.inputChar, specialKey, modifierKeys, true);
+		return false;
 	}
 
 	bool CPluginTurboBadgerUI::HandleKeyboardEvents(const SInputEvent& event)
 	{
+		// All regular unicode text input is handeled seperately, so only take care of the the remaining buttons
+
+		if (event.state == eIS_Pressed)// Only handle presses, since we can only invoke keys as press release combination
+		{
+			tb::MODIFIER_KEYS modifiers = CCryTBUIKeyUtils::CryModiToTBModi((EModifierMask)gEnv->pInput->GetModifiers());
+			tb::SPECIAL_KEY specialKeys = CCryTBUIKeyUtils::CryKeyToTBSpecial(event.keyId);
+
+			_rootWidget.InvokeKey(0, specialKeys, modifiers, true);
+		}
+		// FIXME: Make this dependant on whether the UI should actually receive exclusively
 		return false;
 	}
 

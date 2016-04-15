@@ -107,6 +107,8 @@ namespace TurboBadgerUIPlugin
 			default:
 				break;
 			}
+
+			return tbKey;
 		}
 
 		/// <summary>

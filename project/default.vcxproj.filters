@@ -33,6 +33,9 @@
     <Filter Include="Header Files\Utils">
       <UniqueIdentifier>{855d2a3e-419e-4e56-8409-c0decd24f992}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Widgets">
+      <UniqueIdentifier>{7c70b42a-d693-4e79-9b3b-be9f405ae056}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\readme.md" />
@@ -85,6 +88,9 @@
     <ClCompile Include="..\src\CryTBRenderer.cpp">
       <Filter>Source Files\TurbobadgerImpl</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\CryTBUIManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\StdAfx.h">
@@ -113,6 +119,18 @@
     </ClInclude>
     <ClInclude Include="..\inc\CryTBUIKeyUtils.h">
       <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\RootWidget.h">
+      <Filter>Header Files\Widgets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\CryTBUIManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\CryTBUIInputListener.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\CryTBUIActionListener.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

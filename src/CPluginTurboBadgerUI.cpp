@@ -147,8 +147,6 @@ namespace TurboBadgerUIPlugin
 		desc.SetSize(tb::g_tb_skin->GetDimensionConverter()->DpToPx(14));
 		tb::g_font_manager->SetDefaultFontDescription(desc);
 
-		ShowCursor(true);
-
 		// Create the font now.
 		tb::TBFontFace* font = tb::g_font_manager->CreateFontFace(tb::g_font_manager->GetDefaultFontDescription());
 

@@ -40,7 +40,10 @@
     <ClCompile Include="..\src\CryTBImageLoader.cpp" />
     <ClCompile Include="..\src\CryTBRenderer.cpp" />
     <ClCompile Include="..\src\CryTBSystem.cpp" />
+    <ClCompile Include="..\src\CryTBUIActionListener.cpp" />
+    <ClCompile Include="..\src\CryTBUIInputListener.cpp" />
     <ClCompile Include="..\src\CryTBUIManager.cpp" />
+    <ClCompile Include="..\src\RootWidget.cpp" />
     <ClCompile Include="..\src\StdAfx.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

@@ -19,6 +19,7 @@ public:
 
 private:
 	CCryTBUIManager* _pTBUIManager = nullptr;
+	RootWidget& _rootWidget;
 
 private:
 

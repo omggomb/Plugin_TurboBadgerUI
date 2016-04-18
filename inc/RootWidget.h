@@ -1,5 +1,6 @@
 #pragma once
 #include <tb_widgets.h>
+#include "CryTBUIManager.h"
 
 class RootWidget : public tb::TBWidget
 {
@@ -9,7 +10,7 @@ public:
 	RootWidget();
 	~RootWidget();
 
-	const bool Init(const CCryTBUIManager* pManager);
+	const bool Init(CCryTBUIManager* pManager);
 
 	/// <summary>
 	/// Resizes the root widget (e.g. call when resolution is changed)

@@ -36,6 +36,9 @@
     <Filter Include="Header Files\Widgets">
       <UniqueIdentifier>{7c70b42a-d693-4e79-9b3b-be9f405ae056}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Widgets">
+      <UniqueIdentifier>{a38814fa-0c3d-4df5-bcc9-c2c10b83a2c6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\readme.md" />
@@ -89,6 +92,15 @@
       <Filter>Source Files\TurbobadgerImpl</Filter>
     </ClCompile>
     <ClCompile Include="..\src\CryTBUIManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\RootWidget.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CryTBUIInputListener.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CryTBUIActionListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

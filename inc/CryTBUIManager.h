@@ -17,7 +17,6 @@ class CCryTBUIManager : public IGameFrameworkListener,
 	public ISystemEventListener
 {
 public:
-	CCryTBUIManager();
 	~CCryTBUIManager();
 
 	// IGameFrameworkListener

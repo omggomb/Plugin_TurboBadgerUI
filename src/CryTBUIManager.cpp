@@ -3,7 +3,7 @@
 #include "CPluginTurboBadgerUI.h"
 #include "CryTBUIManager.h"
 
-CCryTBUIManager::CCryTBUIManager()
+CCryTBUIManager::~CCryTBUIManager()
 {
 }
 

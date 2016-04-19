@@ -3,6 +3,8 @@
 #include <tb_language.h>
 #include <tb_font_renderer.h>
 
+#include <IHardwareMouse.h>
+
 #include "CPluginTurboBadgerUI.h"
 #include "CryTBUIManager.h"
 #include "CryTBUIActionListener.h"
@@ -307,6 +309,24 @@ namespace TurboBadgerUIPlugin
 		_tbUIInputListener.SetActive(bIsActive);
 
 		_bIsActive = bIsActive;
+	}
+
+	void CCryTBUIManager::SetModalMode(const bool bModal)
+	{
+		//SetReceiveExclusiveInput(true);
+
+		////gEnv->pHardwareMouse->Hide(!bModal);
+
+		//if (bModal)
+		//{
+		//	gEnv->pHardwareMouse->IncrementCounter();
+		//	gEnv->pHardwareMouse->IncrementCounter();
+		//	gEnv->pHardwareMouse->IncrementCounter();
+		//}
+		//else
+		//{
+		//	gEnv->pHardwareMouse->DecrementCounter();
+		//}
 	}
 
 	RootWidget * CCryTBUIManager::GetRootWidget() const

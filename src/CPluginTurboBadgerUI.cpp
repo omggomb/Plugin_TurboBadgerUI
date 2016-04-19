@@ -182,6 +182,8 @@ namespace TurboBadgerUIPlugin
 		_tbUIManager.LoadWidgetFile("./Assets/UI/ui_resources/test_textwindow.tb.txt", widget->GetID());
 		widget->ResizeToFitContent();
 
+		_tbUIManager.SetModalMode(true);
+
 		return true;
 	}
 

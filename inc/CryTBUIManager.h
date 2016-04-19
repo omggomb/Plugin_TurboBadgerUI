@@ -66,6 +66,7 @@ namespace TurboBadgerUIPlugin
 		void SetUIHidden(const bool hide);
 		void SetActive(const bool bIsActive);
 		const bool IsActive() const { return _bIsActive; }
+		void SetModalMode(const bool bModal);
 
 		RootWidget* GetRootWidget() const;
 		const float GetMWheelInvertFactor() const { return 1.f; } // TODO: Move to CVAR

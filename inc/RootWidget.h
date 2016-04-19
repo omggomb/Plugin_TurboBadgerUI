@@ -1,24 +1,28 @@
 #pragma once
 #include <tb_widgets.h>
-#include "CryTBUIManager.h"
 
-class RootWidget : public tb::TBWidget
+namespace TurboBadgerUIPlugin
 {
-public:
-	TBOBJECT_SUBCLASS(RootWidget, tb::TBWidget);
+	class CCryTBUIManager;
 
-	RootWidget();
-	~RootWidget();
+	class RootWidget : public tb::TBWidget
+	{
+	public:
+		TBOBJECT_SUBCLASS(RootWidget, tb::TBWidget);
 
-	const bool Init(CCryTBUIManager* pManager);
+		RootWidget();
+		~RootWidget();
 
-	/// <summary>
-	/// Resizes the root widget (e.g. call when resolution is changed)
-	/// </summary>
-	/// <param name="newWidth">The new width.</param>
-	/// <param name="newHeight">The new height.</param>
-	void Resize(int newWidth, int newHeight);
-private:
+		const bool Init(CCryTBUIManager* pManager);
 
-	CCryTBUIManager* _pUIManager = nullptr;
-};
+		/// <summary>
+		/// Resizes the root widget (e.g. call when resolution is changed)
+		/// </summary>
+		/// <param name="newWidth">The new width.</param>
+		/// <param name="newHeight">The new height.</param>
+		void Resize(int newWidth, int newHeight);
+	private:
+
+		CCryTBUIManager* _pUIManager = nullptr;
+	};
+}

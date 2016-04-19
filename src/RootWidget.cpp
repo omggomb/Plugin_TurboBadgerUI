@@ -1,30 +1,34 @@
 #include <StdAfx.h>
 #include "RootWidget.h"
 
-RootWidget::RootWidget()
+namespace TurboBadgerUIPlugin
 {
-}
-
-RootWidget::~RootWidget()
-{
-}
-
-const bool RootWidget::Init(CCryTBUIManager * pManager)
-{
-	assert(pManager);
-
-	_pUIManager = pManager;
-
-	return true;
-}
-
-void RootWidget::Resize(int newWidth, int newHeight)
-{
-	tb::TBRect rect
+	RootWidget::RootWidget()
 	{
-		0, 0,
-		newWidth, newHeight
-	};
+	}
 
-	SetRect(rect);
+	RootWidget::~RootWidget()
+	{
+	}
+
+	const bool RootWidget::Init(CCryTBUIManager * pManager)
+	{
+		assert(pManager);
+
+		SetID(tb::TBID("RootWidget"));
+		_pUIManager = pManager;
+
+		return true;
+	}
+
+	void RootWidget::Resize(int newWidth, int newHeight)
+	{
+		tb::TBRect rect
+		{
+			0, 0,
+			newWidth, newHeight
+		};
+
+		SetRect(rect);
+	}
 }

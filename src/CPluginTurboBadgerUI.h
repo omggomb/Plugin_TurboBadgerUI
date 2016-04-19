@@ -17,6 +17,8 @@
 
 #include <FreeImage.h>
 
+#include "CryTBUIManager.h"
+
 class CCryTBRenderer;
 
 namespace TurboBadgerUIPlugin
@@ -26,9 +28,7 @@ namespace TurboBadgerUIPlugin
 	*/
 	class CPluginTurboBadgerUI :
 		public PluginManager::CPluginBase,
-		public IPluginTurboBadgerUI,
-		public IGameFrameworkListener,
-		public IInputEventListener
+		public IPluginTurboBadgerUI
 	{
 	public:
 		CPluginTurboBadgerUI();
@@ -86,20 +86,6 @@ namespace TurboBadgerUIPlugin
 			return static_cast<IPluginBase*>(this);
 		}
 
-		// IGameFrameworkListener
-		void OnPostUpdate(float fDeltaTime) override;
-		void OnSaveGame(ISaveGame* pSaveGame) override {}
-		void OnLoadGame(ILoadGame* pLoadGame) override {}
-		void OnLevelEnd(const char* nextLevel) override {}
-		void OnActionEvent(const SActionEvent& event) override {}
-		// ~IGameFrameworkListener
-
-		// IInputEvenListener
-		bool OnInputEvent(const SInputEvent& event) override;
-		bool OnInputEventUI(const SUnicodeEvent& event) override;
-
-		// ~IInputEventListener
-
 		// TODO: Add your concrete interface implementation
 		FreeImageIO& GetFreeImgIO()
 		{
@@ -108,13 +94,13 @@ namespace TurboBadgerUIPlugin
 	private:
 		void SetupFreeImageIO();
 
-		bool HandleMouseEvents(const SInputEvent& event);
-		bool HandleKeyboardEvents(const SInputEvent& event);
-		// TODO: Move to CVar
-		const int GetMWheelInvertFactor() const { return -1; }
+	private:
+
+		const int GetMWheelInvertFactor() const { return -1; }// TODO: Move to CVar
 		CCryTBRenderer* _pCryTBRenderer = nullptr;
 		tb::TBWidget _rootWidget;
 		FreeImageIO _freeImgIO;
+		CCryTBUIManager _tbUIManager;
 	};
 
 	extern CPluginTurboBadgerUI* gPlugin;

@@ -1,24 +1,28 @@
 #pragma once
-#include <CryTBUIManager.h>
 #include <IActionMapManager.h>
 
-class CCryTBUIActionListener : public IActionListener
+namespace TurboBadgerUIPlugin
 {
-public:
-	// IActionListener
-	void OnAction(const ActionId &action, int activationMode, float value) override;
+	class CCryTBUIManager;
 
-	/* EMPTY */
-	void AfterAction() override {}
-	// ~IActionListener
+	class CCryTBUIActionListener : public IActionListener
+	{
+	public:
+		// IActionListener
+		void OnAction(const ActionId &action, int activationMode, float value) override;
 
-	// CCryTBUIActionListener
-	bool Init(CCryTBUIManager* pTBUIManager);
-	void Shutdown();
-	void SetReceiveExclusiveInput(const bool bExclusive);
-	void SetActive(const bool bIsActive);
-	// ~CCryTBUIActionListener
+		/* EMPTY */
+		void AfterAction() override {}
+		// ~IActionListener
 
-private:
-	CCryTBUIManager* _pTBUIManager = nullptr;
-};
+		// CCryTBUIActionListener
+		bool Init(CCryTBUIManager* pTBUIManager);
+		void Shutdown();
+		void SetReceiveExclusiveInput(const bool bExclusive);
+		void SetActive(const bool bIsActive);
+		// ~CCryTBUIActionListener
+
+	private:
+		CCryTBUIManager* _pTBUIManager = nullptr;
+	};
+}

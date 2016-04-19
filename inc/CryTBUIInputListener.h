@@ -1,29 +1,37 @@
 #pragma once
 #include <IInput.h>
-#include "CryTBUIManager.h"
 
-class CCryTBUIInputListener : public IInputEventListener
+namespace TurboBadgerUIPlugin
 {
-public:
-	// IInputEventListener
-	bool OnInputEvent(const SInputEvent &event) override;
-	bool OnInputEventUI(const SUnicodeEvent &event) override;
-	// ~IInputEventListener
+	class CCryTBUIManager;
+	class RootWidget;
 
-	// CCryTBUIInputListener
-	bool Init(CCryTBUIManager* pTBUIManager);
-	void Shutdown();
-	void SetReceiveExclusiveInput(const bool bExclusive);
-	void SetActive(const bool bIsActive);
-	// ~CCryTBUIInputListener
+	class CCryTBUIInputListener : public IInputEventListener
+	{
+	public:
+		CCryTBUIInputListener();
+		~CCryTBUIInputListener();
 
-private:
-	CCryTBUIManager* _pTBUIManager = nullptr;
-	RootWidget& _rootWidget;
+		// IInputEventListener
+		bool OnInputEvent(const SInputEvent &event) override;
+		bool OnInputEventUI(const SUnicodeEvent &event) override;
+		// ~IInputEventListener
 
-private:
+		// CCryTBUIInputListener
+		bool Init(CCryTBUIManager* pTBUIManager);
+		void Shutdown();
+		void SetReceiveExclusiveInput(const bool bExclusive);
+		void SetActive(const bool bIsActive);
+		// ~CCryTBUIInputListener
 
-	bool HandleKeyboardEvents(const SInputEvent &event);
-	bool HandleMouseEvents(const SInputEvent &event);
-	bool HandleUnicodeEvents(const SUnicodeEvent& event);
-};
+	private:
+		CCryTBUIManager* _pTBUIManager = nullptr;
+		RootWidget* _rootWidget = nullptr;
+		bool _bIsActive;
+	private:
+
+		bool HandleKeyboardEvents(const SInputEvent &event);
+		bool HandleMouseEvents(const SInputEvent &event);
+		bool HandleUnicodeEvents(const SUnicodeEvent& event);
+	};
+}

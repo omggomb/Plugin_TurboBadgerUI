@@ -13,60 +13,76 @@
 /// </summary>
 /// <seealso cref="IGameFrameworkListener" />
 /// <seealso cref="ISystemEventListener" />
-class CCryTBUIManager : public IGameFrameworkListener,
-	public ISystemEventListener
+namespace TurboBadgerUIPlugin
 {
-public:
-	~CCryTBUIManager();
+	struct SDefaultSpecs
+	{
+		static const string UIRoot;
+		static 	const string sLanguage;
+		static 	const string sFont;
+		static const string sFontName;
+		static 	const string sSkin;
+		static const int nDefaultFontSize;
+	};
 
-	// IGameFrameworkListener
-	void OnPostUpdate(float fDeltaTime) override;
+	class CCryTBUIManager : public IGameFrameworkListener,
+		public ISystemEventListener
+	{
+	public:
+		CCryTBUIManager();
+		~CCryTBUIManager();
 
-	/* EMPTY */
-	void OnSaveGame(ISaveGame* pSaveGame) override {}
-	void OnLoadGame(ILoadGame* pLoadGame) override {}
-	void OnLevelEnd(const char* nextLevel) override {}
-	void OnActionEvent(const SActionEvent &event) override {}
-	void OnPreRender() override {}
-	// ~IGameFrameworkListener
+		// IGameFrameworkListener
+		void OnPostUpdate(float fDeltaTime) override;
 
-	// ISystemEventListener
-	void OnSystemEvent(ESystemEvent event, UINT_PTR wparam, UINT_PTR lparam) override;
+		/* EMPTY */
+		void OnSaveGame(ISaveGame* pSaveGame) override {}
+		void OnLoadGame(ILoadGame* pLoadGame) override {}
+		void OnLevelEnd(const char* nextLevel) override {}
+		void OnActionEvent(const SActionEvent &event) override {}
+		void OnPreRender() override {}
+		// ~IGameFrameworkListener
 
-	/* EMPTY */
-	void OnSystemEventAnyThread(ESystemEvent event, UINT_PTR wparam, UINT_PTR lparam) override {}
-	// ~ISystemEventListener
+		// ISystemEventListener
+		void OnSystemEvent(ESystemEvent event, UINT_PTR wparam, UINT_PTR lparam) override;
 
-	// CCryTBUIManager
-	bool Init();
-	void Shutdown();
-	void AddWidgetToRoot(tb::TBWidget* widget);
-	void RemoveWidget(const int index);
-	void RemoveWidget(const tb::TBID widgetID);
-	void LoadWidgetFile(const string sFilepath, const tb::TBID idOfChild);
-	const int GetNumImmediateChildren() const;
-	const bool GetImmediateChild(const int index, tb::TBWidget& foundWindget) const;
-	const bool GetImmediateChild(const tb::TBID childID, tb::TBWidget& outWidget) const;
-	const bool HasImmediateChild(const tb::TBID searchID) const;
-	void SetReceiveExclusiveInput(const bool exclusive);
-	void SetUIHidden(const bool hide);
-	void SetActive(const bool bIsActive);
-	const bool IsActive() const { return _bIsActive; }
+		/* EMPTY */
+		void OnSystemEventAnyThread(ESystemEvent event, UINT_PTR wparam, UINT_PTR lparam) override {}
+		// ~ISystemEventListener
 
-	const RootWidget& GetRootWidget() const;
-	// ~CCryTBUIManager
+		// CCryTBUIManager
+		const bool Init();
+		void Reset();
+		void Shutdown();
+		void AddWidgetToRoot(tb::TBWidget* widget);
+		void RemoveWidget(const int index);
+		void RemoveWidget(const tb::TBID widgetID);
+		void LoadWidgetFile(const string sFilepath, const tb::TBID idOfChild);
+		const int GetNumImmediateChildren() const;
+		tb::TBWidget* GetImmediateChild(const int index) const;
+		tb::TBWidget* GetImmediateChild(const tb::TBID childID) const;
+		const bool HasImmediateChild(const tb::TBID searchID) const;
+		void SetReceiveExclusiveInput(const bool exclusive);
+		void SetUIHidden(const bool hide);
+		void SetActive(const bool bIsActive);
+		const bool IsActive() const { return _bIsActive; }
 
-private:
-	const string c_sGameFrameworkListenerName = "CryTBUIManager";
-	RootWidget _rootWidget;
-	std::vector<tb::TBWidget*> _immediateChildrenList;
-	bool _bIsActive = true;
+		RootWidget* GetRootWidget() const;
+		const float GetMWheelInvertFactor() const { return 1.f; } // TODO: Move to CVAR
+		// ~CCryTBUIManager
 
-	CCryTBUIInputListener _tbUIInputListener;
-	CCryTBUIActionListener _tbUIActionListener;
-	CCryTBRenderer _tbUIRenderer;
+	private:
+		const string c_sGameFrameworkListenerName = "CryTBUIManager";
+		RootWidget* _rootWidget = nullptr;
+		std::vector<tb::TBWidget*> _immediateChildrenList;
+		bool _bIsActive = true;
 
-private:
+		CCryTBUIInputListener _tbUIInputListener;
+		CCryTBUIActionListener _tbUIActionListener;
+		CCryTBRenderer _tbUIRenderer;
 
-	void RemoveWidgetInternal(std::vector<tb::TBWidget*>::iterator iterWhere, bool bRemoveFromVector = true);
-};
+	private:
+
+		void RemoveWidgetInternal(std::vector<tb::TBWidget*>::iterator iterWhere, bool bRemoveFromVector = true);
+	};
+}

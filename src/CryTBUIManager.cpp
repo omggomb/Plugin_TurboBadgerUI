@@ -46,6 +46,9 @@ namespace TurboBadgerUIPlugin
 			_rootWidget->InvokePaint(tb::TBWidget::PaintProps());
 
 			_tbUIRenderer.EndPaint();
+
+			// HACK: IncrementCounter of IHardwareMouse does not work :(
+			//ShowCursor(_bShowMouseCursor);
 		}
 	}
 
@@ -313,20 +316,8 @@ namespace TurboBadgerUIPlugin
 
 	void CCryTBUIManager::SetModalMode(const bool bModal)
 	{
-		//SetReceiveExclusiveInput(true);
-
-		////gEnv->pHardwareMouse->Hide(!bModal);
-
-		//if (bModal)
-		//{
-		//	gEnv->pHardwareMouse->IncrementCounter();
-		//	gEnv->pHardwareMouse->IncrementCounter();
-		//	gEnv->pHardwareMouse->IncrementCounter();
-		//}
-		//else
-		//{
-		//	gEnv->pHardwareMouse->DecrementCounter();
-		//}
+		SetReceiveExclusiveInput(bModal);
+		SetShowMouseCursor(bModal);
 	}
 
 	RootWidget * CCryTBUIManager::GetRootWidget() const
@@ -336,13 +327,22 @@ namespace TurboBadgerUIPlugin
 
 	void CCryTBUIManager::RemoveWidgetInternal(std::vector<tb::TBWidget*>::iterator iterWhere, bool bRemoveFromVector)
 	{
-		_rootWidget->RemoveChild(*iterWhere);
+		if ((*iterWhere)->GetParent())
+		{
+			_rootWidget->RemoveChild(*iterWhere);
+		}
+
+		auto widget = *iterWhere;
+		delete widget;
 
 		if (bRemoveFromVector)
 		{
 			_immediateChildrenList.erase(iterWhere);
 		}
-
-		delete *iterWhere;
+	}
+	void CCryTBUIManager::SetShowMouseCursor(const bool bShow)
+	{
+		// TODO: Handle gamepad etc
+		_bShowMouseCursor = bShow;
 	}
 }

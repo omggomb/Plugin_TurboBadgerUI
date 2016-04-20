@@ -21,8 +21,12 @@ namespace TurboBadgerUIPlugin
 		/// <param name="newWidth">The new width.</param>
 		/// <param name="newHeight">The new height.</param>
 		void Resize(int newWidth, int newHeight);
+
+		void OnChildRemove(tb::TBWidget* child) override;
+		void OnChildAdded(tb::TBWidget* child) override;
 	private:
 
 		CCryTBUIManager* _pUIManager = nullptr;
+		int _nChildCount = 0;
 	};
 }

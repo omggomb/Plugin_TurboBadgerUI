@@ -77,6 +77,7 @@ namespace TurboBadgerUIPlugin
 		RootWidget* _rootWidget = nullptr;
 		std::vector<tb::TBWidget*> _immediateChildrenList;
 		bool _bIsActive = true;
+		bool _bShowMouseCursor = false;
 
 		CCryTBUIInputListener _tbUIInputListener;
 		CCryTBUIActionListener _tbUIActionListener;
@@ -85,5 +86,6 @@ namespace TurboBadgerUIPlugin
 	private:
 
 		void RemoveWidgetInternal(std::vector<tb::TBWidget*>::iterator iterWhere, bool bRemoveFromVector = true);
+		void SetShowMouseCursor(const bool bShow);
 	};
 }

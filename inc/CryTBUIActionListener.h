@@ -24,5 +24,7 @@ namespace TurboBadgerUIPlugin
 
 	private:
 		CCryTBUIManager* _pTBUIManager = nullptr;
+		bool _bIsActive = true;
+		const string  c_sUIExclusiveFilterName = "UIExclusive";
 	};
 }

@@ -18,7 +18,8 @@ namespace TurboBadgerUIPlugin
 	bool CCryTBUIInputListener::OnInputEvent(const SInputEvent & event)
 	{
 		bool bRet = false;
-		if (_bIsActive)
+		bool bConsole = gEnv->pConsole->IsOpened();
+		if (_bIsActive && !bConsole)
 		{
 			switch (event.deviceType)
 			{
@@ -32,18 +33,19 @@ namespace TurboBadgerUIPlugin
 				break;
 			}
 		}
-		return bRet;
+		return _bReceiveExclusive;
 	}
 
 	bool CCryTBUIInputListener::OnInputEventUI(const SUnicodeEvent & event)
 	{
 		bool bRet = false;
+		bool bConsole = gEnv->pConsole->IsOpened();
 
-		if (_bIsActive)
+		if (_bIsActive && !bConsole)
 		{
 			bRet = HandleUnicodeEvents(event);
 		}
-		return bRet;
+		return _bReceiveExclusive;
 	}
 
 	bool CCryTBUIInputListener::Init(CCryTBUIManager * pTBUIManager)
@@ -71,6 +73,7 @@ namespace TurboBadgerUIPlugin
 
 	void CCryTBUIInputListener::SetReceiveExclusiveInput(const bool bExclusive)
 	{
+		_bReceiveExclusive = bExclusive;
 	}
 
 	void CCryTBUIInputListener::SetActive(const bool bIsActive)

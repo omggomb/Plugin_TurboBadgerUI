@@ -27,7 +27,8 @@ namespace TurboBadgerUIPlugin
 	private:
 		CCryTBUIManager* _pTBUIManager = nullptr;
 		RootWidget* _rootWidget = nullptr;
-		bool _bIsActive;
+		bool _bIsActive = true;
+		bool _bReceiveExclusive = false;
 	private:
 
 		bool HandleKeyboardEvents(const SInputEvent &event);

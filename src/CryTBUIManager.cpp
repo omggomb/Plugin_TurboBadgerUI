@@ -48,7 +48,7 @@ namespace TurboBadgerUIPlugin
 			_tbUIRenderer.EndPaint();
 
 			// HACK: IncrementCounter of IHardwareMouse does not work :(
-			//ShowCursor(_bShowMouseCursor);
+			ShowCursor(_bShowMouseCursor);
 		}
 	}
 
@@ -163,14 +163,6 @@ namespace TurboBadgerUIPlugin
 			TurboBadgerUIPlugin::gPlugin->LogWarning("Failed to unregister CryTBUIManager for system events");
 		}
 
-		// Delete all widgets
-		for (auto it = _immediateChildrenList.begin(); it != _immediateChildrenList.end(); ++it)
-		{
-			RemoveWidgetInternal(it, false);
-		}
-
-		_immediateChildrenList.clear();
-
 		tb::tb_core_shutdown();
 	}
 
@@ -181,7 +173,6 @@ namespace TurboBadgerUIPlugin
 			if (!HasImmediateChild(widget->GetID()))
 			{
 				// FIXME: Maybe copy it so the caller can't delete it?
-				_immediateChildrenList.push_back(widget);
 				_rootWidget->AddChild(widget);
 			}
 			else
@@ -195,37 +186,40 @@ namespace TurboBadgerUIPlugin
 		}
 	}
 
-	void CCryTBUIManager::RemoveWidget(const int index)
+	tb::TBWidget* CCryTBUIManager::RemoveWidget(const int index, const bool bDoDelete) const
 	{
-		if (index < 0 || index >= _immediateChildrenList.size())
-		{
-			TurboBadgerUIPlugin::gPlugin->LogWarning("Tried to remove immediate child with out of bounds index: %d", index);
-		}
-		else
-		{
-			auto widgetToRemoveIter = (_immediateChildrenList.begin() + index);
+		auto widget = _rootWidget->GetChildFromIndex(index);
 
-			RemoveWidgetInternal(widgetToRemoveIter);
+		if (widget)
+		{
+			_rootWidget->RemoveChild(widget);
+
+			if (bDoDelete)
+			{
+				delete widget;
+				widget = nullptr;
+			}
 		}
+
+		return widget;
 	}
 
-	void CCryTBUIManager::RemoveWidget(const tb::TBID widgetID)
+	tb::TBWidget* CCryTBUIManager::RemoveWidget(const tb::TBID widgetID, const bool bDoDelete) const
 	{
-		if (HasImmediateChild(widgetID))
-		{
-			auto widgetToRemoveIter = std::find_if(_immediateChildrenList.begin(),
-				_immediateChildrenList.end(),
-				[widgetID](tb::TBWidget* widget)
-			{
-				return widget->GetID() == widgetID;
-			});
+		auto widget = _rootWidget->GetWidgetByID(widgetID);
 
-			RemoveWidgetInternal(widgetToRemoveIter);
-		}
-		else
+		if (widget)
 		{
-			TurboBadgerUIPlugin::gPlugin->LogWarning("Tried to remove non existing immediate child: %d", widgetID);
+			_rootWidget->RemoveChild(widget);
+
+			if (bDoDelete)
+			{
+				delete widget;
+				widget = nullptr;
+			}
 		}
+
+		return widget;
 	}
 
 	void CCryTBUIManager::LoadWidgetFile(const string sFilepath, const tb::TBID idOfChild)
@@ -244,41 +238,30 @@ namespace TurboBadgerUIPlugin
 
 	const int CCryTBUIManager::GetNumImmediateChildren() const
 	{
-		return _immediateChildrenList.size();
+		assert(!"This function is very slow, consider counting your children yourself (none are added from within TBUI)");
+		gPlugin->LogError("Calling GetNumImmediateChildren is very slow, consider counting your children yourself (none are added from within TBUI)");
+
+		auto it = _rootWidget->GetIteratorForward();
+		auto link = it.GetAndStep();
+
+		int numChildren = 0;
+		while (link != nullptr)
+		{
+			++numChildren;
+			link = it.GetAndStep();
+		}
+
+		return numChildren;
 	}
 
 	tb::TBWidget* CCryTBUIManager::GetImmediateChild(const int index) const
 	{
-		tb::TBWidget* widget = nullptr;
-
-		if (index < 0 || index >= _immediateChildrenList.size())
-		{
-			TurboBadgerUIPlugin::gPlugin->LogWarning("Tried to get immediate child with out of bounds index: %d", index);
-		}
-		else
-		{
-			widget = _immediateChildrenList[index];
-		}
-
-		return widget;
+		return _rootWidget->GetChildFromIndex(index);
 	}
 
 	tb::TBWidget* CCryTBUIManager::GetImmediateChild(const tb::TBID childID) const
 	{
-		auto it = std::find_if(_immediateChildrenList.begin(),
-			_immediateChildrenList.end(),
-			[childID](tb::TBWidget* widget)
-		{
-			return widget->GetID() == childID;
-		});
-
-		tb::TBWidget* outwidget = nullptr;
-		if (it != _immediateChildrenList.end())
-		{
-			outwidget = *it;
-		}
-
-		return outwidget;
+		return _rootWidget->GetWidgetByID(childID);
 	}
 
 	const bool CCryTBUIManager::HasImmediateChild(const tb::TBID searchID) const
@@ -325,24 +308,18 @@ namespace TurboBadgerUIPlugin
 		return _rootWidget;
 	}
 
-	void CCryTBUIManager::RemoveWidgetInternal(std::vector<tb::TBWidget*>::iterator iterWhere, bool bRemoveFromVector)
-	{
-		if ((*iterWhere)->GetParent())
-		{
-			_rootWidget->RemoveChild(*iterWhere);
-		}
-
-		auto widget = *iterWhere;
-		delete widget;
-
-		if (bRemoveFromVector)
-		{
-			_immediateChildrenList.erase(iterWhere);
-		}
-	}
 	void CCryTBUIManager::SetShowMouseCursor(const bool bShow)
 	{
 		// TODO: Handle gamepad etc
 		_bShowMouseCursor = bShow;
+
+		/*if (bShow)
+		{
+			gEnv->pHardwareMouse->IncrementCounter();
+		}
+		else
+		{
+			gEnv->pHardwareMouse->DecrementCounter();
+		}*/
 	}
 }

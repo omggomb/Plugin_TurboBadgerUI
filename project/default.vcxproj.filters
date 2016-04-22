@@ -103,6 +103,9 @@
     <ClCompile Include="..\src\CryTBUIActionListener.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\CryTBRendererEx.cpp">
+      <Filter>Source Files\TurbobadgerImpl</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\StdAfx.h">
@@ -143,6 +146,9 @@
     </ClInclude>
     <ClInclude Include="..\inc\CryTBUIActionListener.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\inc\CryTBRendererEx.h">
+      <Filter>Header Files\TurbobadgerImpl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

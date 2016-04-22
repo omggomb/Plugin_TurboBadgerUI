@@ -39,6 +39,7 @@
     <ClCompile Include="..\src\CryTBFile.cpp" />
     <ClCompile Include="..\src\CryTBImageLoader.cpp" />
     <ClCompile Include="..\src\CryTBRenderer.cpp" />
+    <ClCompile Include="..\src\CryTBRendererEx.cpp" />
     <ClCompile Include="..\src\CryTBSystem.cpp" />
     <ClCompile Include="..\src\CryTBUIActionListener.cpp" />
     <ClCompile Include="..\src\CryTBUIInputListener.cpp" />
@@ -53,6 +54,7 @@
     <ClInclude Include="..\inc\CryTBFile.h" />
     <ClInclude Include="..\inc\CryTBImageLoader.h" />
     <ClInclude Include="..\inc\CryTBRenderer.h" />
+    <ClInclude Include="..\inc\CryTBRendererEx.h" />
     <ClInclude Include="..\inc\CryTBUIActionListener.h" />
     <ClInclude Include="..\inc\CryTBUIInputListener.h" />
     <ClInclude Include="..\inc\CryTBUIKeyUtils.h" />

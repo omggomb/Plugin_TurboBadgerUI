@@ -40,13 +40,18 @@ namespace TurboBadgerUIPlugin
 			_rootWidget->InvokeProcess();
 
 			// Render UI
-			_tbUIRenderer.BeginPaint(_rootWidget->GetRect().w,
+			_tbUIRendererEx.BeginPaint(_rootWidget->GetRect().w,
 				_rootWidget->GetRect().h);
 
 			_rootWidget->InvokePaint(tb::TBWidget::PaintProps());
 
-			_tbUIRenderer.EndPaint();
+			_tbUIRendererEx.EndPaint();
 
+			auto rtTexture = gEnv->pRenderer->EF_GetTextureByID(_tbUIRendererEx.GetRenderTargetID());
+
+			gEnv->pRenderer->Push2dImage(0, 0,
+				rtTexture->GetWidth(), rtTexture->GetHeight(),
+				rtTexture->GetTextureID());
 			// HACK: IncrementCounter of IHardwareMouse does not work :(
 			ShowCursor(_bShowMouseCursor);
 		}
@@ -105,7 +110,7 @@ namespace TurboBadgerUIPlugin
 		}
 
 		// Init TB
-		if (!tb::tb_core_init(&_tbUIRenderer))
+		if (!tb::tb_core_init(&_tbUIRendererEx))
 		{
 			return false;
 		}

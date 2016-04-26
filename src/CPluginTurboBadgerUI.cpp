@@ -177,10 +177,11 @@ namespace TurboBadgerUIPlugin
 		auto widget = new tb::TBWindow();
 
 		_tbUIManager.AddWidgetToRoot(widget);
-		_tbUIManager.LoadWidgetFile("./Assets/UI/ui_resources/test_textwindow.tb.txt", widget->GetID());
+		_tbUIManager.LoadWidgetFile("./Assets/UI/ui_resources/test_ui.tb.txt", widget->GetID());
 		_tbUIManager.SetActive(true);
 
 		widget->ResizeToFitContent();
+		//widget->SetPosition(tb::TBPoint(50, 50));
 		_tbUIManager.SetModalMode(true);
 
 		return true;

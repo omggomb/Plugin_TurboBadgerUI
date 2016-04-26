@@ -7,6 +7,7 @@
 #include "CryTBUIInputListener.h"
 #include "CryTBUIActionListener.h"
 #include "CryTBRenderer.h"
+#include "CryTBRendererEx.h"
 
 /// <summary>
 /// Manages the TB UI integration into CE.
@@ -163,6 +164,7 @@ namespace TurboBadgerUIPlugin
 		CCryTBUIInputListener _tbUIInputListener;
 		CCryTBUIActionListener _tbUIActionListener;
 		CCryTBRenderer _tbUIRenderer;
+		CCryTBRendererEx _tbUIRendererEx;
 
 	private:
 		void SetShowMouseCursor(const bool bShow);

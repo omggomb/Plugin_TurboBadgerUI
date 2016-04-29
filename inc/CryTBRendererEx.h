@@ -87,4 +87,6 @@ private:
 	tb::TBRect _clipRect = tb::TBRect(0, 0, 1, 1);
 	ITexture* _pCERenderTargetTexture = nullptr;
 	unsigned char* _pRTData = nullptr;
+
+	ITexture* _pDefaultUVsTexture = nullptr;
 };

@@ -50,6 +50,10 @@ void CCryTBRendererEx::CreateNewRenderTarget(const int nWidth, const int nHeight
 		nTextureFlags);
 
 	_pCERenderTargetTexture->SetHighQualityFiltering(true);
+
+	// TODO: Remove after debug
+	_pDefaultUVsTexture = gEnv->pRenderer->EF_LoadTexture("EngineAssets/TextureMsg/DefaultNoUVs.dds");
+	_pDefaultUVsTexture->SetHighQualityFiltering();
 }
 
 CCryTBRendererEx::CCryTBRendererEx()
@@ -244,14 +248,14 @@ void CCryTBRendererEx::RenderTextureInternal(const tb::TBRect & dst_rect, const 
 	const Vec4 colorFloat = ConvertTBcolorToFloatVec4(color);
 
 	// DEBUG
-	/*u0 = v0 = 0.f;
-	u1 = v1 = 1.f;*/
-	/*
-	fX = fY = -.7f;
-	fWidth = fHeight = 1.f;*/
+	u0 = v0 = 0.f;
+	u1 = v1 = 1.f;
+
+	fX = fY = 0.f;
+	fWidth = fHeight = 1.f;
 	// ~DEBUG
 
-	fY = 1.f - fY;
+	//fY = 1.f - fY;
 	/*v0 = 1.f - v0;
 	v1 = 1.f - v1;*/
 
@@ -262,7 +266,7 @@ void CCryTBRendererEx::RenderTextureInternal(const tb::TBRect & dst_rect, const 
 	v0 = v1;
 	v1 = fTemp;*/
 
-	gEnv->pRenderer->PushUITexture(pSrcTexture->GetTextureID(),
+	gEnv->pRenderer->PushUITexture(_pDefaultUVsTexture->GetTextureID(),
 		_pCERenderTargetTexture->GetTextureID(),
 		fX, fY, fWidth, fHeight,
 		v0, v0, u1, v1,

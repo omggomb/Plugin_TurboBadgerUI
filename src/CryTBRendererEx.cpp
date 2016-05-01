@@ -21,6 +21,48 @@ const int CCryTBRendererEx::GetRenderTargetID() const
 	return _pCERenderTargetTexture ? _pCERenderTargetTexture->GetTextureID() : -1;
 }
 
+void CCryTBRendererEx::Render2DUI()
+{
+	SVF_P3F_C4B_T2F verts[6];
+
+	float fZ = 1.f;
+
+	verts[0].xyz = Vec3(0, 0, fZ);
+	verts[0].st = Vec2(0.f, 0.f);
+	verts[0].color.dcolor = 0xffffffff;
+
+	verts[1].xyz = Vec3(0, 256, fZ);
+	verts[1].st = Vec2(0.f, 1.f);
+	verts[1].color.dcolor = 0xffffffff;
+
+	verts[2].xyz = Vec3(256, 0, fZ);
+	verts[2].st = Vec2(1.f, 0.f);
+	verts[2].color.dcolor = 0xffffffff;
+
+	//_------------------------------------
+
+	verts[3].xyz = Vec3(0, 256, fZ);
+	verts[3].st = Vec2(0.f, 1.f);
+	verts[3].color.dcolor = 0xffffffff;
+
+	verts[4].xyz = Vec3(256, 256, fZ);
+	verts[4].st = Vec2(1.f, 1.f);
+	verts[4].color.dcolor = 0xffffffff;
+
+	verts[5].xyz = Vec3(256, 0, fZ);
+	verts[5].st = Vec2(1.f, 0.f);
+	verts[5].color.dcolor = 0xffffffff;
+
+	uint16 inds[]
+	{
+		0, 1, 2, 3, 4, 5,
+	};
+
+	gEnv->pRenderer->SetTexture(_pCERenderTargetTexture->GetTextureID());
+
+	gEnv->pRenderer->DrawDynVB(verts, inds, 6, 6, prtTriangleList);
+}
+
 void CCryTBRendererEx::CreateNewRenderTarget(const int nWidth, const int nHeight)
 {
 	assert(gEnv);
@@ -52,7 +94,15 @@ void CCryTBRendererEx::CreateNewRenderTarget(const int nWidth, const int nHeight
 	_pCERenderTargetTexture->SetHighQualityFiltering(true);
 
 	// TODO: Remove after debug
-	_pDefaultUVsTexture = gEnv->pRenderer->EF_LoadTexture("EngineAssets/TextureMsg/DefaultNoUVs.dds");
+	_pDefaultUVsTexture = gEnv->pRenderer->EF_GetTextureByName("engineassets/texturemsg/replaceme.tif");
+	auto tex = gEnv->pRenderer->EF_GetTextureByName("EngineAssets/TextureMsg/DefaultNoUVs.dds");
+
+	if (!_pDefaultUVsTexture)
+	{
+		_pDefaultUVsTexture = gEnv->pRenderer->EF_LoadTexture("engineassets/texturemsg/replaceme.tif", FT_DONT_STREAM);
+	}
+
+	_pDefaultUVsTexture->SetFilter(FILTER_LINEAR);
 	_pDefaultUVsTexture->SetHighQualityFiltering();
 }
 

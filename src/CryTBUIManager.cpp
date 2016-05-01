@@ -45,14 +45,15 @@ namespace TurboBadgerUIPlugin
 
 			_rootWidget->InvokePaint(tb::TBWidget::PaintProps());
 
+			_tbUIRendererEx.Render2DUI();
 			_tbUIRendererEx.EndPaint();
 
-			auto rtTexture = gEnv->pRenderer->EF_GetTextureByID(_tbUIRendererEx.GetRenderTargetID());
+			/*auto rtTexture = gEnv->pRenderer->EF_GetTextureByID(_tbUIRendererEx.GetRenderTargetID());
 
 			gEnv->pRenderer->Push2dImage(0, 0,
 				rtTexture->GetWidth(), rtTexture->GetHeight(),
-				rtTexture->GetTextureID());
-			// HACK: IncrementCounter of IHardwareMouse does not work :(
+				rtTexture->GetTextureID());*/
+				// HACK: IncrementCounter of IHardwareMouse does not work :(
 			ShowCursor(_bShowMouseCursor);
 		}
 	}

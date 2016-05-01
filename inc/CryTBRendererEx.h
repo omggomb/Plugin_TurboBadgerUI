@@ -74,6 +74,7 @@ public:
 
 	void SetClipRect(const tb::TBRect &rect);
 	const int GetRenderTargetID() const;
+	void Render2DUI();
 
 private:
 	void CreateNewRenderTarget(const int nWidth, const int nHeight);

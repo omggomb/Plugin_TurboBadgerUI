@@ -27,30 +27,36 @@ void CCryTBRendererEx::Render2DUI()
 
 	float fZ = 1.f;
 
+	// TL
 	verts[0].xyz = Vec3(0, 0, fZ);
-	verts[0].st = Vec2(0.f, 0.f);
+	verts[0].st = Vec2(0.f, 1.f);
 	verts[0].color.dcolor = 0xffffffff;
 
+	// BL
 	verts[1].xyz = Vec3(0, 256, fZ);
-	verts[1].st = Vec2(0.f, 1.f);
+	verts[1].st = Vec2(0.f, 0.f);
 	verts[1].color.dcolor = 0xffffffff;
 
+	//TR
 	verts[2].xyz = Vec3(256, 0, fZ);
-	verts[2].st = Vec2(1.f, 0.f);
+	verts[2].st = Vec2(1.f, 1.f);
 	verts[2].color.dcolor = 0xffffffff;
 
 	//_------------------------------------
 
+	// BL
 	verts[3].xyz = Vec3(0, 256, fZ);
-	verts[3].st = Vec2(0.f, 1.f);
+	verts[3].st = Vec2(0.f, 0.f);
 	verts[3].color.dcolor = 0xffffffff;
 
+	// BR
 	verts[4].xyz = Vec3(256, 256, fZ);
-	verts[4].st = Vec2(1.f, 1.f);
+	verts[4].st = Vec2(1.f, 0.f);
 	verts[4].color.dcolor = 0xffffffff;
 
+	// TR
 	verts[5].xyz = Vec3(256, 0, fZ);
-	verts[5].st = Vec2(1.f, 0.f);
+	verts[5].st = Vec2(1.f, 1.f);
 	verts[5].color.dcolor = 0xffffffff;
 
 	uint16 inds[]
@@ -95,14 +101,12 @@ void CCryTBRendererEx::CreateNewRenderTarget(const int nWidth, const int nHeight
 
 	// TODO: Remove after debug
 	_pDefaultUVsTexture = gEnv->pRenderer->EF_GetTextureByName("engineassets/texturemsg/replaceme.tif");
-	auto tex = gEnv->pRenderer->EF_GetTextureByName("EngineAssets/TextureMsg/DefaultNoUVs.dds");
 
 	if (!_pDefaultUVsTexture)
 	{
-		_pDefaultUVsTexture = gEnv->pRenderer->EF_LoadTexture("engineassets/texturemsg/replaceme.tif", FT_DONT_STREAM);
+		_pDefaultUVsTexture = gEnv->pRenderer->EF_LoadTexture("engineassets/texturemsg/replaceme.tif");
 	}
 
-	_pDefaultUVsTexture->SetFilter(FILTER_LINEAR);
 	_pDefaultUVsTexture->SetHighQualityFiltering();
 }
 
@@ -293,16 +297,18 @@ void CCryTBRendererEx::RenderTextureInternal(const tb::TBRect & dst_rect, const 
 
 	fX = dstRect.x / fTargetWidth;
 	fY = dstRect.y / fTargetHeight;
+	fY = 1.f - fY;
+	fY -= dstRect.h / fTargetHeight;
 	fWidth = (dstRect.x + dstRect.w) / fTargetWidth;
 	fHeight = (dstRect.y + dstRect.h) / fTargetHeight;
 	const Vec4 colorFloat = ConvertTBcolorToFloatVec4(color);
 
 	// DEBUG
-	u0 = v0 = 0.f;
+	/*u0 = v0 = 0.f;
 	u1 = v1 = 1.f;
 
-	fX = fY = 0.f;
-	fWidth = fHeight = 1.f;
+	fX = fY = 0.0f;
+	fWidth = fHeight = 1.0f;*/
 	// ~DEBUG
 
 	//fY = 1.f - fY;
@@ -316,7 +322,7 @@ void CCryTBRendererEx::RenderTextureInternal(const tb::TBRect & dst_rect, const 
 	v0 = v1;
 	v1 = fTemp;*/
 
-	gEnv->pRenderer->PushUITexture(_pDefaultUVsTexture->GetTextureID(),
+	gEnv->pRenderer->PushUITexture(pSrcTexture->GetTextureID(),
 		_pCERenderTargetTexture->GetTextureID(),
 		fX, fY, fWidth, fHeight,
 		v0, v0, u1, v1,
